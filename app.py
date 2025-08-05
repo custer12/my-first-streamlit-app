@@ -9,13 +9,13 @@ client = OpenAI(
     base_url="https://api.upstage.ai/v1"
 )
 
-st.set_page_config(page_title="RPG AI", page_icon="😊")
-st.title("RPG AI")
-st.write("아래 상점, 인벤토리, 공격 명령어 적기")
+st.set_page_config(page_title="주식 AI", page_icon="😊")
+st.title("주식")
+st.write("!주식, !주식 구매")
 
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "상점, 인벤토리, 전투 명령어가 있고 명령어를 말하면 이제 그에 대한 답변이 나와야해 전투를 하면 이기면 보상 지면 아이템을 잃는 느낌"}
+        {"role": "system", "content": "!주식, !주식 구매, !주식 판매, !주식 보유, !돈 같은거 내돈은 처음5000로 기본 주식들은 이제 1000 가격으로 시작"}
     ]
 
 # 이전 대화 내용 출력
@@ -26,7 +26,7 @@ for msg in st.session_state.messages[1:]:
         st.chat_message("assistant").write(msg["content"])
 
 # 사용자 입력 받기
-if prompt := st.chat_input("고민이나 궁금한 점을 입력하세요..."):
+if prompt := st.chat_input("입력 : "):
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
