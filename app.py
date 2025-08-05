@@ -1,10 +1,11 @@
 import streamlit as st
-
 from openai import OpenAI
 
-# OpenAI 클라이언트 설정 (solar-pro2, Upstage API)
+# API 키를 secrets에서 가져오기
+api_key = st.secrets["UPSTAGE_API_KEY"]
+
 client = OpenAI(
-    api_key = st.secrets["UPSTAGE_API_KEY"],
+    api_key=api_key,
     base_url="https://api.upstage.ai/v1"
 )
 
