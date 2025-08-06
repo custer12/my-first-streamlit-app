@@ -185,25 +185,15 @@ with tab1:
                         for idx, recipe in enumerate(recipes, 1):
                             with st.form(f'dish_{idx}', False):
                                 st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
-                                if recipe["img_url"]:
-                                    col1, col2, button = st.columns([1, 6, 3])
-                                    with col1:
-                                        st.image(recipe["img_url"], width=100)
-                                    with col2:
-                                        st.markdown(f"{recipe['summary']}")
-                                    with button:
-                                        if st.form_submit_button('레시피 보기'):
-                                            st.markdown(f"[레시피 보기]({recipe['link']})")
-                                            st.sleep(2)
-                                else:
-                                    col1, col2, button = st.columns([1, 6, 3])
-                                    with col1:
-                                        empty('a')
-                                    with col2:
-                                        st.markdown(f"{recipe['summary']}")
-                                    with button:
-                                        if st.form_submit_button('레시피 보기'):
-                                            st.markdown(f"[레시피 보기]({recipe['link']})")
+                                col1, col2, button = st.columns([1, 6, 3])
+                                with col1:
+                                    st.image(recipe["img_url"], width=100)
+                                with col2:
+                                    st.markdown(f"{recipe['summary']}")
+                                with button:
+                                    st.markdown(f"[레시피 보기]({recipe['link']})")
+                                    if st.form_submit_button('레시피 보기'):
+                                        st.sleep(2)
                         st.markdown(f"## {dish_name} 관련 레시피")
                         st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
                     else:
