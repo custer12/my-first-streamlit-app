@@ -269,10 +269,11 @@ with tab2:
             pass
             if st.form_submit_button("🍰 디저트 추천해줘!"):
                 with col2:
+                    title = st.empty()
                     placeholder = st.empty()
                     with st.spinner("AI가 디저트를 추천하고 있습니다..."):
                         recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
-                        st.markdown("### 🍨 추천 디저트 리스트")
+                        title.markdown("### 🍨 추천 디저트 리스트")
                         for d in recommendations:
                             if isinstance(d, str):
                                 st.error(d)
