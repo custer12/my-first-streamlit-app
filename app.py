@@ -44,8 +44,8 @@ def get_fallback_recipes(search_url, top_n = 10):
         for card in recipe_cards:
             title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
             link = "https://www.10000recipe.com" + card.select_one("a")["href"]
-            img = card.select_one(".common_sp_thumb img")
-            img_url = img["src"] if img and img.has_attr("src") else None
+            imgs = card.select(".common_sp_thumb img")
+            img_url = imgs[-1]["src"] if imgs else None
             summary = card.select_one(".common_sp_caption_desc")
             summary_text = summary.get_text(strip=True) if summary else ""
             
