@@ -58,7 +58,7 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_summary(recipe_url):
+def get_recipe_summary_multiline(recipe_url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -67,8 +67,11 @@ def get_recipe_summary(recipe_url):
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
         summary_div = soup.select_one("div.view2_summary_in")
+
         if summary_div:
-            return summary_div.get_text(strip=True)
+            # <br> 태그 기준으로 분리 후 텍스트 추출
+            lines = [line.strip('" ').strip() for line in summary_div.stripped_strings]
+            return "\n\n\n".join(lines)
         else:
             return "요약 정보를 찾을 수 없습니다."
     except Exception as e:
