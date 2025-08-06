@@ -97,8 +97,6 @@ with tab1:
     if "prev_dishes" not in st.session_state:
         st.session_state.prev_dishes = []
 
-    # 사용자 입력창 (좌측)
-    with st.sidebar:
         st.header("🥕 요리 정보 입력")
         ingredients = st.text_area("냉장고 속 재료를 입력하세요", placeholder="예: 계란, 당근, 대파")
         cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식"])
