@@ -16,7 +16,7 @@ except KeyError:
     st.stop()
 
 client = OpenAI(
-    api_key=api_key,
+    api_key,
     base_url="https://api.upstage.ai/v1"
 )
 
@@ -115,18 +115,8 @@ with tab1:
                 "일반": "일반 요리 스타일로, 보통 사람들이 쉽게 만들 수 있는 음식을 추천해주세요",
                 "간단": "초보자도 쉽게 따라 할 수 있는 간단한 요리 스타일로, 아주 쉬운 방법과 최소한의 재료를 가진 음식을 추천해주세요"
             }
-
-            # 이전 추천 요리 리스트를 프롬프트에 추가
-            prev_dishes = st.session_state.prev_dishes
-            prev_dishes_text = ""
-            if prev_dishes:
-                prev_dishes_text = (
-                    "이전에 추천했던 요리 목록은 다음과 같습니다. 이번에는 이 목록에 포함된 요리와 최대한 겹치지 않는, 다른 종류의 요리를 추천해 주세요.\n"
-                    f"이전 추천 요리: {', '.join(prev_dishes)}\n"
-                )
-
             prompt = (
-                f"{prev_dishes_text}"
+                f"요리를 추천해 주세요"
                 f"재료: {ingredients}\n"
                 f"요리 종류: {cuisine}\n"
                 f"요리 스타일: {style}\n"
