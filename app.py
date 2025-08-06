@@ -196,16 +196,11 @@ with tab1:
                 recipes = get_top5_recipes_from_10000recipe(dish_name)
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
-                        col1, empty1, col2 = st.columns([1, 0.25, 5])
-                        with col1:
-                            if recipe["img_url"]:
-                                st.image(recipe["img_url"], width=150)
-                            else:
-                                st.write("이미지 없음")
-                        with empty1:
-                            empty()
-                        with col2:
-                            st.markdown(f"**[ {idx} ] [{recipe['title']}]({recipe['link']})**")
+                        st.markdown(f"# **[ {idx} ] [{recipe['title']}]({recipe['link']})**")
+                        if recipe["img_url"]:
+                            st.image(recipe["img_url"], width=150)
+                        else:
+                            st.write("이미지 없음")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
