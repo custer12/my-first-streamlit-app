@@ -93,10 +93,6 @@ with tab1:
         except Exception as e:
             return []
 
-    # 이전 추천 요리 저장용 세션 상태 변수
-    if "prev_dishes" not in st.session_state:
-        st.session_state.prev_dishes = []
-
     st.header("🥕 요리 정보 입력")
     ingredients = st.text_area("냉장고 속 재료를 입력하세요", placeholder="예: 계란, 당근, 대파")
     cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식"])
@@ -188,10 +184,6 @@ with tab1:
                 # 그래도 못찾으면 재료에서 첫 번째 재료 사용
                 if not dish_name:
                     dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
-
-                # 이전 추천 요리 목록에 이번 추천 요리 추가
-                if dish_name and dish_name not in st.session_state.prev_dishes:
-                    st.session_state.prev_dishes.append(dish_name)
 
                 # 10000레시피에서 추천 요리 관련 TOP5 레시피 요약 및 링크+이미지 출력
                 st.markdown("---")
