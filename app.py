@@ -104,7 +104,7 @@ with tab1:
             return []
 
     st.header("🥕 요리 정보 입력")
-    ingredients = st.text_area("냉장고 속 재료를 입력하세요", placeholder="예: 계란, 당근, 대파")
+    ingredients = st.text_area("재료 혹은 음식 이름 입력하세요", placeholder="예: 계란, 당근, 대파")
     cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식", "전체"])
     space1 = st.empty()
 
@@ -126,7 +126,7 @@ with tab1:
             }
             prompt = (
                 f"요리를 한개 추천해 주세요"
-                f"재료: {ingredients}\n"
+                f"재료 혹은 음식 : {ingredients}\n"
                 f"요리 종류: {cuisine}\n"
                 f"요리 스타일: {style}\n"
                 f"{style_description.get(style, '')}\n"  # 스타일에 맞는 설명 추가
