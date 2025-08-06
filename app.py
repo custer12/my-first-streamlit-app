@@ -262,14 +262,12 @@ with tab2:
             with col2:
                 with st.spinner("AI가 디저트를 추천하고 있습니다..."):
                     recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
-                with st.form(key="dessert_form"):
-                    st.markdown("### 🍨 추천 디저트 리스트")
-                    for d in recommendations:
-                        if isinstance(d, str):
-                            st.write(d)
-                        else:
-                            st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
-                    st.form_submit_button('확인')
+                st.markdown("### 🍨 추천 디저트 리스트")
+                for d in recommendations:
+                    if isinstance(d, str):
+                        st.write(d)
+                    else:
+                        st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
     with empty1:
         empty()
 
