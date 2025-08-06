@@ -104,11 +104,11 @@ with tab1:
 
     st.header("🥕 요리 정보 입력")
     ingredients = st.text_area("냉장고 속 재료를 입력하세요", placeholder="예: 계란, 당근, 대파")
-    cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식"])
+    cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식", "전체"])
 
     # 요리 스타일 선택 추가
-    style = st.selectbox("요리 스타일을 선택하세요", ["고급", "일반", "간단"])
-    submit = st.button("🍽️ 요리 추천받기")
+    style = st.selectbox("요리 스타일을 선택하세요", ["고급", "일반", "간단", "전체"])
+    submit = st.button("🍽️ 요리 추천")
     st.markdown("---")
 
     # 결과 영역
