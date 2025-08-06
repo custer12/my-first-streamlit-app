@@ -271,49 +271,53 @@ with tab2:
     ]
 
     # 칼로리 350 이상 -> 높음, 미만 -> 낮음
-    def calorie_level(cal):
-        return "높음" if cal >= 350 else "낮음"
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        def calorie_level(cal):
+            return "높음" if cal >= 350 else "낮음"
 
-    # 필터 선택 옵션 생성
-    all_types = ["상관없음"] + sorted(list({d["type"] for d in desserts}))
-    all_calorie_levels = ["상관없음", "낮음", "높음"]
-    all_tastes = ["상관없음"] + sorted(list({d["taste"] for d in desserts}))
+        # 필터 선택 옵션 생성
+        all_types = ["상관없음"] + sorted(list({d["type"] for d in desserts}))
+        all_calorie_levels = ["상관없음", "낮음", "높음"]
+        all_tastes = ["상관없음"] + sorted(list({d["taste"] for d in desserts}))
 
-    food = st.text_input("🍽️ 음식을 입력하세요:")
+        food = st.text_input("🍽️ 음식을 입력하세요:")
 
-    selected_type = st.selectbox("🍰 디저트 타입 선택", options=all_types)
-    selected_calorie = st.selectbox("🔥 열량 수준 선택", options=all_calorie_levels)
-    selected_taste = st.selectbox("😋 디저트 맛 선택", options=all_tastes)
+        selected_type = st.selectbox("🍰 디저트 타입 선택", options=all_types)
+        selected_calorie = st.selectbox("🔥 열량 수준 선택", options=all_calorie_levels)
+        selected_taste = st.selectbox("😋 디저트 맛 선택", options=all_tastes)
 
-    def recommend_desserts(food_name, type_selected, calorie_selected, taste_selected):
-        filtered = desserts
+        def recommend_desserts(food_name, type_selected, calorie_selected, taste_selected):
+            filtered = desserts
 
-        if type_selected != "상관없음":
-            filtered = [d for d in filtered if d["type"] == type_selected]
+            if type_selected != "상관없음":
+                filtered = [d for d in filtered if d["type"] == type_selected]
 
-        if calorie_selected != "상관없음":
-            filtered = [d for d in filtered if calorie_level(d["calorie"]) == calorie_selected]
+            if calorie_selected != "상관없음":
+                filtered = [d for d in filtered if calorie_level(d["calorie"]) == calorie_selected]
 
-        if taste_selected != "상관없음":
-            filtered = [d for d in filtered if d["taste"] == taste_selected]
+            if taste_selected != "상관없음":
+                filtered = [d for d in filtered if d["taste"] == taste_selected]
 
-        if len(filtered) == 0:
-            return ["조건에 맞는 디저트를 찾지 못했습니다."]
-        else:
-            return random.sample(filtered, min(5, len(filtered)))
+            if len(filtered) == 0:
+                return ["조건에 맞는 디저트를 찾지 못했습니다."]
+            else:
+                return random.sample(filtered, min(5, len(filtered)))
 
-    if st.button("🍰 디저트 추천해줘!"):
-        if food.strip() == "":
-            st.warning("음식 이름을 입력해주세요.")
-        else:
-            recommendations = recommend_desserts(food, selected_type, selected_calorie, selected_taste)
-            st.markdown("### 🍨 추천 디저트 리스트")
-            for d in recommendations:
-                if isinstance(d, str):
-                    st.write(d)
-                else:
-                    level = calorie_level(d["calorie"])
-                    st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
+        if st.button("🍰 디저트 추천해줘!"):
+            if food.strip() == "":
+                st.warning("음식 이름을 입력해주세요.")
+            else:
+                recommendations = recommend_desserts(food, selected_type, selected_calorie, selected_taste)
+                with col2:
+                    with st.form(key="dessert_form"):
+                        st.markdown("### 🍨 추천 디저트 리스트")
+                        for d in recommendations:
+                            if isinstance(d, str):
+                                st.write(d)
+                            else:
+                                level = calorie_level(d["calorie"])
+                                st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
 with tab3:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
