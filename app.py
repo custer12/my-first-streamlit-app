@@ -27,6 +27,9 @@ def fetch_recipes(API_KEY, start=1, end=10, recipe_name=None):
 st.set_page_config(page_title="🍽️ 레시피 검색", layout="wide")
 st.title("식품안전처 Recipe DB 검색")
 
+recipe_name = st.text_input("검색할 음식명 (선택 사항)")
+num = st.number_input("가져올 개수", min_value=1, max_value=100, value=10)
+
 if st.button("🔍 레시피 불러오기"):
     if not API_KEY:
         st.error("❌ API 키가 필요합니다.")
@@ -42,4 +45,3 @@ if st.button("🔍 레시피 불러오기"):
                 st.warning("검색 결과가 없습니다.")
         except Exception as e:
             st.error(f"API 호출 중 오류 발생: {e}")
-
