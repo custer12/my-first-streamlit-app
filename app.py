@@ -55,6 +55,7 @@ def get_fallback_recipes(search_url, top_n = 5):
                 intro = intro_tag.get_text(strip=True) if intro_tag else ""
             except:
                 pass
+            
             recipes.append({
                 "title": title,
                 "link": link,
@@ -64,8 +65,6 @@ def get_fallback_recipes(search_url, top_n = 5):
         return recipes
     except Exception as e:
         return []
-
-
 
 # 탭 생성
 tab1, tab2, tab3, tab4 = st.tabs(["🍳 AI 요리 추천 챗봇", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
