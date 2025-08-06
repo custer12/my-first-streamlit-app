@@ -197,7 +197,7 @@ with tab1:
                     for idx, recipe in enumerate(recipes, 1):
                         st.markdown(f"**{idx}. [{recipe['title']}]({recipe['link']})**")
                         if recipe["img_url"]:
-                            st.image(recipe["img_url"], width=16)
+                            st.image(recipe["img_url"], width=150)
                         else:
                             st.write("이미지 없음")
                         st.markdown("---")
