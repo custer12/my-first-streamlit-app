@@ -199,7 +199,14 @@ with tab1:
                                 with button:
                                     st.form_submit_button('레시피 보기')
                             else:
-                                st.write("이미지 없음")
+                                col1, col2, button = st.columns([1, 6, 3])
+                                with col1:
+                                    empty('a')
+                                with col2:
+                                    st.markdown(f"{recipe['summary']}")
+                                with button:
+                                    st.form_submit_button('레시피 보기')
+                                pass
                     st.markdown(f"## {dish_name} 관련 레시피")
                     st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
                 else:
@@ -261,6 +268,7 @@ with tab2:
                     return [f"AI 추천 오류: {e}"]
             pass
             if st.form_submit_button("🍰 디저트 추천해줘!"):
+                placeholder = st.empty()
                 with col2:
                     with st.spinner("AI가 디저트를 추천하고 있습니다..."):
                         recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
@@ -269,7 +277,7 @@ with tab2:
                             if isinstance(d, str):
                                 st.error(d)
                             else:
-                                with st.container():
+                                with placeholder.container():
                                     st.markdown(f"**🍰 {d['name']}**")
                                     st.caption(f"타입: {d['type']} | 열량: {d['calorie']} | 맛: {d['taste']}")
                                     st.write(f"💡 {d['description']}")
