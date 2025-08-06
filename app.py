@@ -565,7 +565,7 @@ with tab4:
             with col1:
                 st.image(f"{recipe['img_url']}")
             with col2:
-                st.link_button(f"{recipe['link']}")
+                st.link_button('바로 가기',recipe['link'])
             st.markdown(f"{recipe['summary']}")
 
 
