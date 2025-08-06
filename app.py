@@ -259,19 +259,16 @@ with tab2:
                 return [f"AI 추천 오류: {e}"]
         pass
         if st.button("🍰 디저트 추천해줘!"):
-            if food.strip() == "":
-                st.warning("음식 이름을 입력해주세요.")
-            else:
-                recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
-                with col2:
-                    with st.form(key="dessert_form"):
-                        st.markdown("### 🍨 추천 디저트 리스트")
-                        for d in recommendations:
-                            if isinstance(d, str):
-                                st.write(d)
-                            else:
-                                st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
-                        st.form_submit_button('확인')
+            recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
+            with col2:
+                with st.form(key="dessert_form"):
+                    st.markdown("### 🍨 추천 디저트 리스트")
+                    for d in recommendations:
+                        if isinstance(d, str):
+                            st.write(d)
+                        else:
+                            st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
+                    st.form_submit_button('확인')
     with empty1:
         empty()
 
