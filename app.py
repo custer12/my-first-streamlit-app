@@ -229,7 +229,7 @@ with tab2:
                 f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
                 f"열량 수준: {calorie_selected if calorie_selected != '상관없음' else '제한 없음'}\n"
                 f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
-                f"아래 형식의 JSON으로 추천해줘:\n"
+                "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
                 "{\n"
                 '  "desserts": [\n'
                 '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명"},\n'
@@ -244,7 +244,13 @@ with tab2:
                     stream=False
                 )
                 reply = response.choices[0].message.content
-                data = json.loads(reply)
+                import re
+                match = re.search(r'\{[\s\S]*\}', reply)
+                if match:
+                    json_str = match.group(0)
+                else:
+                    json_str = reply
+                data = json.loads(json_str)
                 return data.get("desserts", [])
             except Exception as e:
                 return [f"AI 추천 오류: {e}"]
