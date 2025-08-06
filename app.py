@@ -84,8 +84,8 @@ with tab1:
                 link = "https://www.10000recipe.com" + card.select_one("a")["href"]
                 summary = card.select_one(".common_sp_caption_desc")
                 summary_text = summary.get_text(strip=True) if summary else ""
-                img = card.select_one(".common_sp_thumb img")
-                img_url = img["src"] if img and img.has_attr("src") else None
+                imgs = card.select(".common_sp_thumb img")
+                img_url = imgs[-1]["src"] if imgs else None
                 recipes.append({
                     "title": title,
                     "link": link,
