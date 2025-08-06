@@ -200,7 +200,7 @@ with tab1:
                                     }
                                     </style>
                                     """, unsafe_allow_html=True)
-                                    st.markdown(f"[🍽️ 레시피 보기]({recipe['link']})")
+                                    st.link_button(f"[🍽️ 레시피 보기]",{recipe['link']})
                                     st.form_submit_button(f"[🍽️ 레시피 보기]")
                         st.markdown(f"## {dish_name} 관련 레시피")
                         st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
