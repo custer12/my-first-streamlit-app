@@ -195,7 +195,7 @@ with tab1:
                     for idx, recipe in enumerate(recipes, 1):
                         st.markdown(f"### **[ {idx} ] [{recipe['title']}]({recipe['link']})**")
                         if recipe["img_url"]:
-                            col1, col2 = st.columns([1, 4])
+                            col1, col2 = st.columns([1, 6])
                             with col1:
                                 st.image(recipe["img_url"], width=150)
                             with col2:
