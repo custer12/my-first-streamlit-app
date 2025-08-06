@@ -568,7 +568,7 @@ with tab4:
                 st.markdown(f"{recipe}")
             
             with col2:
-                if st.button(f"🤖 AI 상세 레시피 생성", key=f"ai_recipe_{recipe['rank']}"):
+                if st.button(f"🤖 AI 상세 레시피 생성"):
                     pass
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
