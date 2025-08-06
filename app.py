@@ -561,11 +561,7 @@ with tab4:
     for recipe in filtered_recipes:
         recipe_index += 1
         with st.expander(f"[ {recipe_index} ] {recipe['title']}"):
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.image(f"{recipe['img_url']}", caption=f"{recipe['link']}의 자료")
-            with col2:
-                st.link_button('바로 가기',recipe['link'])
+            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
             st.markdown(f"{recipe['summary']}")
 
 
