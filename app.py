@@ -1,7 +1,7 @@
 import streamlit as st
 from pyparsing import empty
 
-col1, empty0, col2, empty1, col3, empty2, col4 = st.columns([1,0.2,1,0.2,1,0.2,1])
+col1, empty0, col2, empty1, col3, empty2, col4 = st.columns([1,0.1,1,0.1,1,0.1,1])
 
 with col1:
     st.header("테스트1")
