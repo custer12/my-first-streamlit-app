@@ -60,220 +60,41 @@ def get_fallback_recipes(search_url, top_n = 5):
 tab1, tab2, tab3, tab4 = st.tabs(["🎯 음식 추천", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
 
 with tab1:
-    '''
+    st.set_page_config(page_title="음식 레시피 추천", layout="wide")
+    st.title("🍽️ 10000레시피 인기 레시피 순위별 요약")
 
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        st.header("⚙️ 기본 설정")
-        
-        # 음식 카테고리
-        category = st.selectbox(
-            "음식 카테고리",
-            ["한식", "중식", "일식", "양식", "분식", "디저트", "음료", "전체"]
-        )
-        
-        # 시간대
-        time_of_day = st.selectbox(
-            "시간대",
-            ["아침", "점심", "저녁", "야식", "간식", "상관없음"]
-        )
-        
-        # 인원수
-        people_count = st.slider("인원수", 1, 10, 1)
-        
-        # 조리 시간
-        cooking_time = st.selectbox(
-            "조리 시간",
-            ["5분 이하", "5-15분", "15-30분", "30분-1시간", "1시간 이상", "상관없음"]
-        )
-        
-        # 난이도
-        difficulty = st.selectbox(
-            "조리 난이도",
-            ["초급", "중급", "고급", "상관없음"]
-        )
-    
-    with col2:
-        st.header("🎯 선호도 설정")
-        
-        # 알레르기/기피 음식
-        allergies = st.text_area(
-            "알레르기/기피 음식:",
-            placeholder="예: 새우, 견과류, 우유 등",
-            height=80
-        )
-        
-        # 선호하는 맛
-        taste_preference = st.multiselect(
-            "선호하는 맛",
-            ["매운맛", "단맛", "신맛", "쓴맛", "짭짤한맛", "고소한맛", "새콤달콤", "상관없음"],
-            default=["상관없음"]
-        )
-        
-        # 특별한 요청
-        special_request = st.text_area(
-            "특별한 요청:",
-            placeholder="예: 건강식, 다이어트용, 아이와 함께 먹을 수 있는 음식 등",
-            height=80
-        )
-        
-        # 현재 상황
-        situation = st.text_area(
-            "현재 상황:",
-            placeholder="예: 오늘은 정말 피곤해서 간단하게 먹고 싶어요",
-            height=80
-        )
-        
-        # 기분
-        mood = st.selectbox(
-            "오늘의 기분",
-            ["기쁨", "우울함", "스트레스", "평온함", "배고픔", "상관없음"]
-        )
-        
-        # 생성 버튼
-        if st.button("🍽️ 음식 추천받기", type="primary"):
-            if situation.strip():
-                with st.spinner("AI가 완벽한 음식을 찾고 있습니다..."):
-                    try:
-                        # 프롬프트 구성
-                        # 베스트 레시피 중에서 조건에 맞는 것들 필터링
-                        matching_recipes = []
-                        for recipe in BEST_RECIPES:
-                            if category != "전체" and category in recipe["category"]:
-                                matching_recipes.append(recipe)
-                            elif category == "전체":
-                                matching_recipes.append(recipe)
-                        
-                        recipe_context = "\n".join([f"- {r['name']} ({r['category']}, {r['cooking_time']}, {r['difficulty']})" for r in matching_recipes[:5]])
-                        
-                        prompt = f"""
-당신은 음식 추천 전문가입니다. 사용자의 상황과 선호도에 맞는 음식을 추천해주세요.
+    st.write(
+        """
+        원하는 음식 이름을 입력하면, 10000레시피 사이트에서 해당 음식의 인기 레시피를 순위별로 정리해서 보여줍니다.
+        사이트에 직접 들어가지 않아도 대표 레시피와 요약 정보를 한눈에 확인할 수 있습니다.
+        """
+    )
 
+    with st.form("food_search_form"):
+        food_name = st.text_input("음식 이름을 입력하세요", placeholder="예: 김치찌개, 파스타, 초밥 등")
+        top_n = st.slider("몇 개의 인기 레시피를 볼까요?", min_value=3, max_value=10, value=5)
+        submitted = st.form_submit_button("인기 레시피 검색")
 
-**기본 정보:**
-- 카테고리: {category}
-- 예산: {budget}
-- 시간대: {time_of_day}
-- 인원수: {people_count}명
-- 조리시간: {cooking_time}
-- 난이도: {difficulty}
-
-**선호도:**
-- 알레르기/기피: {allergies if allergies.strip() else "없음"}
-- 선호 맛: {', '.join(taste_preference)}
-- 특별 요청: {special_request if special_request.strip() else "없음"}
-
-**상황:**
-- 현재 상황: {situation}
-- 기분: {mood}
-
-**만개의 레시피 인기 요리 참고:**
-{recipe_context}
-
-위의 인기 레시피들을 참고하여 사용자 조건에 맞는 음식을 추천해주세요.
-다음 형식으로 JSON으로 응답해주세요:
-
-{{
-    "recommendations": [
-        {{
-            "name": "음식명",
-            "description": "음식 설명",
-            "price_range": "가격대",
-            "cooking_time": "조리시간",
-            "difficulty": "난이도",
-            "reason": "추천 이유",
-            "rating": "평점 (1-5)",
-            "calories": "예상 칼로리",
-            "ingredients": ["주요 재료들"],
-            "tips": "조리 팁"
-        }}
-    ],
-    "summary": "전체 추천 요약",
-    "alternatives": [
-        {{
-            "name": "대안 음식",
-            "category": "카테고리",
-            "reason": "추천 이유"
-        }}
-    ],
-    "nutrition_tips": "영양 팁",
-    "cooking_advice": "조리 조언"
-}}
-최소 5개의 음식을 추천하고, 각각에 대한 상세한 정보를 포함해주세요.
-"""
-
-                        response = client.chat.completions.create(
-                            model="solar-pro2",
-                            messages=[{"role": "user", "content": prompt}],
-                            stream=False,
-                        )
-                        
-                        try:
-                            result = json.loads(response.choices[0].message.content)
-                            st.session_state.food_result = result
-                        except json.JSONDecodeError:
-                            st.session_state.raw_food_response = response.choices[0].message.content
-                            
-                    except Exception as e:
-                        st.error(f"오류가 발생했습니다: {str(e)}")
-
-# 결과 표시
-if "food_result" in st.session_state:
-    st.markdown("---")
-    st.header("🍽️ AI 추천 결과")
-    
-    result = st.session_state.food_result
-    
-    # 요약
-    if "summary" in result:
-        st.info(f"📋 **추천 요약:** {result['summary']}")
-    
-    # 메인 추천들
-    if "recommendations" in result:
-        st.subheader("🎯 추천 음식")
-        
-        for i, rec in enumerate(result["recommendations"], 1):
-            with st.expander(f"{i}. {rec['name']} (평점: {rec['rating']}/5)"):
-                col1, col2 = st.columns([2, 1])
-                with col1:
-                    st.markdown(f"**설명:** {rec['description']}")
-                    st.markdown(f"**가격대:** {rec['price_range']}")
-                    st.markdown(f"**조리시간:** {rec['cooking_time']}")
-                    st.markdown(f"**난이도:** {rec['difficulty']}")
-                    st.markdown(f"**칼로리:** {rec['calories']}")
-                    st.markdown(f"**추천 이유:** {rec['reason']}")
-                with col2:
-                    st.markdown("**주요 재료:**")
-                    for ingredient in rec['ingredients']:
-                        st.write(f"• {ingredient}")
-                    st.markdown(f"**조리 팁:** {rec['tips']}")
-    
-    # 대안들
-    if "alternatives" in result and result["alternatives"]:
-        st.subheader("🔄 대안 음식")
-        alt_cols = st.columns(3)
-        for i, alt in enumerate(result["alternatives"]):
-            with alt_cols[i % 3]:
-                st.code(alt['name'], language="python")
-                st.caption(f"{alt['category']} - {alt['reason']}")
-    
-    # 영양 팁
-    if "nutrition_tips" in result:
-        st.subheader("🥗 영양 팁")
-        st.info(result["nutrition_tips"])
-    
-    # 조리 조언
-    if "cooking_advice" in result:
-        st.subheader("👨‍🍳 조리 조언")
-        st.success(result["cooking_advice"])
-
-elif "raw_food_response" in st.session_state:
-    st.markdown("---")
-    st.header("🍽️ AI 추천")
-    st.markdown(st.session_state.raw_food_response)
-
-    '''
+    if submitted and food_name.strip():
+        with st.spinner("10000레시피에서 인기 레시피를 찾는 중입니다..."):
+            recipes = get_fallback_recipes(f"https://www.10000recipe.com/recipe/list.html?q={food_name}", top_n=5)
+            if recipes:
+                st.success(f"'{food_name}'에 대한 인기 레시피 {len(recipes)}개를 찾았습니다!")
+                for idx, recipe in enumerate(recipes, 1):
+                    st.markdown(f"### {idx}위. [{recipe['title']}]({recipe['link']})")
+                    cols = st.columns([1, 3])
+                    with cols[0]:
+                        if recipe["img_url"]:
+                            st.image(recipe["img_url"], use_column_width=True)
+                        else:
+                            st.write("이미지 없음")
+                    with cols[1]:
+                        st.write(recipe["summary"] if recipe["summary"] else "설명 없음")
+                    st.markdown("---")
+            else:
+                st.warning("해당 음식에 대한 인기 레시피를 찾을 수 없습니다. 다른 이름으로 시도해 보세요.")
+    else:
+        st.info("왼쪽에 음식 이름을 입력하고 '인기 레시피 검색' 버튼을 눌러주세요.")
 with tab2:
     '''
     st.header("📖 레시피 검색")
@@ -536,7 +357,7 @@ with tab3:
     '''
 with tab4:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
-    st.header("🏆 만개의 레시피 베스트 TOP 10")
+    st.header("🏆 만개의 레시피 베스트 순위")
     
     col1, col2 = st.columns([3, 1])
     with col1:
