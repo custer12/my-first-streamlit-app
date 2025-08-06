@@ -202,7 +202,7 @@ with tab1:
                                 st.form_submit_button('ㅁ')
                             else:
                                 st.write("이미지 없음")
-                    st.markdown(f"## {dish_name} 관련 레시피")
+                    st.markdown(f"### {dish_name} 관련 레시피")
                     st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
