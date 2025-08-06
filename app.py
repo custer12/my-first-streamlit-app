@@ -218,15 +218,18 @@ with tab2:
 
     col1, empty1, col2 = st.columns([1,0.05, 1])
     with col1:
-        food = st.text_input("🍽️ 음식을 입력하세요:")
+        food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
+        dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
         calorie_options = ["상관없음", "낮음", "높음"]
         taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
+        selected_type = st.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
         selected_calorie = st.selectbox("🔥 열량 수준 선택", options=calorie_options)
         selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
 
-        def recommend_desserts_ai(food_name, calorie_selected, taste_selected):
+        def recommend_desserts_ai(food_name, type_selected, calorie_selected, taste_selected):
             prompt = (
                 f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
+                f"디저트 종류: {type_selected if type_selected != '상관없음' else '제한 없음'}\n"
                 f"열량 수준: {calorie_selected if calorie_selected != '상관없음' else '제한 없음'}\n"
                 f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
                 "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
@@ -259,7 +262,7 @@ with tab2:
             if food.strip() == "":
                 st.warning("음식 이름을 입력해주세요.")
             else:
-                recommendations = recommend_desserts_ai(food, selected_calorie, selected_taste)
+                recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
                 with col2:
                     with st.form(key="dessert_form"):
                         st.markdown("### 🍨 추천 디저트 리스트")
