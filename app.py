@@ -58,24 +58,27 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_summary_multiline(recipe_url):
+def get_recipe_title_and_summary(url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
     try:
-        res = requests.get(recipe_url, headers=headers, timeout=10)
+        res = requests.get(url, headers=headers, timeout=10)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
-        summary_div = soup.select_one("div.view2_summary_in")
 
-        if summary_div:
-            # <br> 태그 기준으로 분리 후 텍스트 추출
-            lines = [line.strip('" ').strip() for line in summary_div.stripped_strings]
-            return "\n\n\n".join(lines)
-        else:
-            return "요약 정보를 찾을 수 없습니다."
+        # 제목
+        title_tag = soup.select_one("div.view2_summary.st3 > h3")
+        title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+
+        # 요약
+        summary_tag = soup.select_one("div.view2_summary_in#recipeIntro")
+        summary = summary_tag.get_text(strip=True) if summary_tag else "요약 없음"
+
+        return summary
+
     except Exception as e:
-        return f"오류 발생: {e}"
+        return {"error": str(e)}
 
 
 # 탭 생성
