@@ -2,17 +2,31 @@ import streamlit as st
 
 col1, empty, col2, empty1, col3, empty2, col4 = st.columns([5,1,1,1,1])
 
+with empty:
+    empty()
 with col1:
     st.header("테스트1")
 
+with empty1:
+    empty()
+
 with col2:
     st.header("테스트2")
+    
+with empty2:
+    empty()
 
 with col3:
     st.header("테스트3")
+    
+with empty3:
+    empty()
 
 with col4:
     st.header("테스트4")
+    
+with empty4:
+    empty()
 
 
 left, middle1, middle2, right = st.columns(4, vertical_alignment="bottom")
