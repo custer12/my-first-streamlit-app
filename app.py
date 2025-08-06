@@ -58,7 +58,7 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_title_and_summary(url):
+def get_recipe_summary_only(url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -67,23 +67,13 @@ def get_recipe_title_and_summary(url):
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
 
-        container = soup.select_one("div#contents_area_full")
-
-        # 제목 (h3)
-        title_tag = container.select_one("div.view2_summary.st3 > h3") if container else None
-        title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
-
-        # 요약 (div#recipeIntro)
-        summary_tag = container.select_one("div#recipeIntro") if container else None
+        summary_tag = soup.select_one("div#recipeIntro")
         summary = summary_tag.get_text(separator="\n", strip=True) if summary_tag else "요약 없음"
 
-        return {
-            "title": title,
-            "summary": summary
-        }
+        return summary
 
     except Exception as e:
-        return {"error": str(e)}
+        return f"오류 발생: {e}"
 
 
 # 탭 생성
@@ -230,7 +220,7 @@ with tab1:
                             else:
                                 st.write("이미지 없음")
                         with cols[1]:
-                            st.write(f"{get_recipe_title_and_summary(recipe["img_url"])['title']}")
+                            st.write(f"{get_recipe_summary_only(recipe["img_url"])}")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
