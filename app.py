@@ -318,6 +318,7 @@ with tab2:
                             else:
                                 level = calorie_level(d["calorie"])
                                 st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
+                        st.form_submit_button('확인')
 with tab3:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
