@@ -213,139 +213,109 @@ with tab1:
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
-    '''
-    st.header("📖 레시피 검색")
+    st.set_page_config(page_title="🍰 AI 디저트 추천기", page_icon="🍧")
     
-    # 검색 옵션
-    col1, col2 = st.columns(2)
+    st.title("🤖 AI 디저트 추천기")
+    st.write("음식을 입력하고, 원하는 디저트 타입, 열량, 맛을 선택하면 어울리는 디저트를 추천해 드려요!")
     
-    with col1:
-        search_type = st.selectbox(
-            "검색 유형",
-            ["음식명으로 검색", "재료로 검색", "조리법으로 검색"]
-        )
-        
-        search_query = st.text_input(
-            "검색어를 입력하세요:",
-            placeholder="예: 김치찌개, 돼지고기, 간단한 요리"
-        )
+    desserts = [
+        {"name": "초코 케이크", "calorie": 400, "type": "케이크", "taste": "진한"},
+        {"name": "치즈 케이크", "calorie": 450, "type": "케이크", "taste": "진한"},
+        {"name": "당근 케이크", "calorie": 380, "type": "케이크", "taste": "달콤"},
+        {"name": "레드벨벳 케이크", "calorie": 420, "type": "케이크", "taste": "달콤"},
+        {"name": "모카 케이크", "calorie": 410, "type": "케이크", "taste": "진한"},
+        {"name": "바닐라 컵케이크", "calorie": 320, "type": "케이크", "taste": "달콤"},
+        {"name": "초코 퐁당", "calorie": 330, "type": "케이크", "taste": "진한"},
+        {"name": "티라미수", "calorie": 390, "type": "케이크", "taste": "진한"},
+        {"name": "딸기 타르트", "calorie": 280, "type": "타르트", "taste": "상큼"},
+        {"name": "체리 타르트", "calorie": 290, "type": "타르트", "taste": "상큼"},
+        {"name": "레몬 타르트", "calorie": 270, "type": "타르트", "taste": "신"},
+        {"name": "블루베리 타르트", "calorie": 300, "type": "타르트", "taste": "상큼"},
+        {"name": "푸딩", "calorie": 250, "type": "푸딩", "taste": "달콤"},
+        {"name": "카라멜 푸딩", "calorie": 280, "type": "푸딩", "taste": "달콤"},
+        {"name": "녹차 아이스크림", "calorie": 200, "type": "아이스크림", "taste": "진한"},
+        {"name": "바닐라 아이스크림", "calorie": 220, "type": "아이스크림", "taste": "달콤"},
+        {"name": "망고 아이스크림", "calorie": 230, "type": "아이스크림", "taste": "상큼"},
+        {"name": "피스타치오 아이스크림", "calorie": 240, "type": "아이스크림", "taste": "진한"},
+        {"name": "민트 아이스크림", "calorie": 210, "type": "아이스크림", "taste": "시원"},
+        {"name": "초코 쿠키", "calorie": 360, "type": "과자", "taste": "진한"},
+        {"name": "아몬드 쿠키", "calorie": 340, "type": "과자", "taste": "짭짤"},
+        {"name": "카라멜 팝콘", "calorie": 310, "type": "과자", "taste": "달콤"},
+        {"name": "마카롱", "calorie": 290, "type": "과자", "taste": "달콤"},
+        {"name": "젤리", "calorie": 180, "type": "과자", "taste": "상큼"},
+        {"name": "블랙베리 젤리", "calorie": 190, "type": "과자", "taste": "상큼"},
+        {"name": "허니 브레드", "calorie": 400, "type": "케이크", "taste": "달콤"},
+        {"name": "피칸 파이", "calorie": 430, "type": "파이", "taste": "진한"},
+        {"name": "호두 파이", "calorie": 420, "type": "파이", "taste": "진한"},
+        {"name": "바나나 스무디", "calorie": 350, "type": "음료수", "taste": "달콤"},
+        {"name": "망고 쉐이크", "calorie": 340, "type": "음료수", "taste": "상큼"},
+        {"name": "레몬 에이드", "calorie": 200, "type": "음료수", "taste": "신"},
+        {"name": "아이스 아메리카노", "calorie": 15, "type": "음료수", "taste": "진한"},
+        {"name": "카라멜 라떼", "calorie": 320, "type": "음료수", "taste": "달콤"},
+        {"name": "허브 티", "calorie": 5, "type": "음료수", "taste": "시원"},
+        {"name": "허니 레몬 티", "calorie": 180, "type": "음료수", "taste": "신"},
+        {"name": "딸기 쉐이크", "calorie": 300, "type": "음료수", "taste": "상큼"},
+        {"name": "바닐라 라떼", "calorie": 310, "type": "음료수", "taste": "달콤"},
+        {"name": "딸기 무스", "calorie": 260, "type": "무스", "taste": "달콤"},
+        {"name": "초코 무스", "calorie": 280, "type": "무스", "taste": "진한"},
+        {"name": "코코넛 무스", "calorie": 270, "type": "무스", "taste": "달콤"},
+        {"name": "체리 무스", "calorie": 240, "type": "무스", "taste": "상큼"},
+        {"name": "팥빙수", "calorie": 150, "type": "아이스크림", "taste": "시원"},
+        {"name": "허니 브레드", "calorie": 400, "type": "케이크", "taste": "달콤"},
+        {"name": "초콜릿 퐁당", "calorie": 330, "type": "케이크", "taste": "진한"},
+        {"name": "딸기 젤리", "calorie": 190, "type": "과자", "taste": "상큼"},
+        {"name": "레몬 셔벗", "calorie": 220, "type": "아이스크림", "taste": "신"},
+        {"name": "콜라", "calorie": 200, "type": "음료수", "taste": "탄산"},
+        {"name": "사이다", "calorie": 190, "type": "음료수", "taste": "탄산"},
+        {"name": "토닉워터", "calorie": 150, "type": "음료수", "taste": "탄산"},
+        {"name": "레몬 탄산수", "calorie": 120, "type": "음료수", "taste": "탄산"},
+        {"name": "자몽 탄산수", "calorie": 130, "type": "음료수", "taste": "탄산"},
+    ]
     
-    with col2:
-        cuisine_type = st.selectbox(
-            "요리 종류",
-            ["전체", "한식", "중식", "일식", "양식", "분식", "디저트"]
-        )
-        
-        max_time = st.selectbox(
-            "최대 조리시간",
-            ["상관없음", "15분 이하", "30분 이하", "1시간 이하", "1시간 이상"]
-        )
+    # 칼로리 350 이상 -> 높음, 미만 -> 낮음
+    def calorie_level(cal):
+        return "높음" if cal >= 350 else "낮음"
     
-    if st.button("🔍 레시피 검색"):
-        if search_query.strip():
-            with st.spinner("레시피를 검색하고 있습니다..."):
-                try:
-                    search_prompt = f"""
-{search_type}으로 레시피를 검색해주세요.
-
-검색어: {search_query}
-요리 종류: {cuisine_type}
-최대 조리시간: {max_time}
-
-다음 형식으로 JSON으로 응답해주세요:
-
-{{
-    "recipes": [
-        {{
-            "name": "음식명",
-            "cuisine": "요리 종류",
-            "cooking_time": "조리시간",
-            "difficulty": "난이도",
-            "servings": "인분",
-            "ingredients": [
-                {{
-                    "name": "재료명",
-                    "amount": "양",
-                    "note": "참고사항"
-                }}
-            ],
-            "instructions": [
-                "조리 단계들"
-            ],
-            "tips": "조리 팁",
-            "nutrition": {{
-                "calories": "칼로리",
-                "protein": "단백질",
-                "carbs": "탄수화물",
-                "fat": "지방"
-            }}
-        }}
-    ],
-    "total_found": "검색된 레시피 수",
-    "search_summary": "검색 결과 요약"
-}}
-
-최소 3개의 레시피를 제공해주세요.
-"""
-
-                    response = client.chat.completions.create(
-                        model="solar-pro2",
-                        messages=[{"role": "user", "content": search_prompt}],
-                        stream=False,
-                    )
-                    
-                    try:
-                        search_result = json.loads(response.choices[0].message.content)
-                        st.session_state.search_result = search_result
-                    except json.JSONDecodeError:
-                        st.session_state.raw_search_response = response.choices[0].message.content
-                        
-                except Exception as e:
-                    st.error(f"오류가 발생했습니다: {str(e)}")
+    # 필터 선택 옵션 생성
+    all_types = ["상관없음"] + sorted(list({d["type"] for d in desserts}))
+    all_calorie_levels = ["상관없음", "낮음", "높음"]
+    all_tastes = ["상관없음"] + sorted(list({d["taste"] for d in desserts}))
     
-    # 검색 결과 표시
-    if "search_result" in st.session_state:
-        search_result = st.session_state.search_result
-        
-        st.subheader(f"📋 검색 결과 ({search_result['total_found']}개)")
-        st.info(search_result['search_summary'])
-        
-        for i, recipe in enumerate(search_result['recipes'], 1):
-            with st.expander(f"{i}. {recipe['name']} ({recipe['cuisine']})"):
-                col1, col2 = st.columns([1, 1])
-                
-                with col1:
-                    st.markdown(f"**조리시간:** {recipe['cooking_time']}")
-                    st.markdown(f"**난이도:** {recipe['difficulty']}")
-                    st.markdown(f"**인분:** {recipe['servings']}")
-                    
-                    st.markdown("**재료:**")
-                    for ingredient in recipe['ingredients']:
-                        st.write(f"• {ingredient['name']}: {ingredient['amount']}")
-                        if ingredient['note']:
-                            st.caption(f"  ({ingredient['note']})")
-                
-                with col2:
-                    st.markdown("**조리 순서:**")
-                    for j, step in enumerate(recipe['instructions'], 1):
-                        st.write(f"{j}. {step}")
-                    
-                    st.markdown(f"**조리 팁:** {recipe['tips']}")
-                
-                # 영양 정보
-                st.markdown("**영양 정보:**")
-                nutrition = recipe['nutrition']
-                nut_cols = st.columns(4)
-                with nut_cols[0]:
-                    st.metric("칼로리", nutrition['calories'])
-                with nut_cols[1]:
-                    st.metric("단백질", nutrition['protein'])
-                with nut_cols[2]:
-                    st.metric("탄수화물", nutrition['carbs'])
-                with nut_cols[3]:
-                    st.metric("지방", nutrition['fat'])
-
-    '''
+    food = st.text_input("🍽️ 음식을 입력하세요:")
+    
+    selected_type = st.selectbox("🍰 디저트 타입 선택", options=all_types)
+    selected_calorie = st.selectbox("🔥 열량 수준 선택", options=all_calorie_levels)
+    selected_taste = st.selectbox("😋 디저트 맛 선택", options=all_tastes)
+    
+    def recommend_desserts(food_name, type_selected, calorie_selected, taste_selected):
+        filtered = desserts
+    
+        if type_selected != "상관없음":
+            filtered = [d for d in filtered if d["type"] == type_selected]
+    
+        if calorie_selected != "상관없음":
+            filtered = [d for d in filtered if calorie_level(d["calorie"]) == calorie_selected]
+    
+        if taste_selected != "상관없음":
+            filtered = [d for d in filtered if d["taste"] == taste_selected]
+    
+        if len(filtered) == 0:
+            return ["조건에 맞는 디저트를 찾지 못했습니다."]
+        else:
+            return random.sample(filtered, min(5, len(filtered)))
+    
+    if st.button("🍰 디저트 추천해줘!"):
+        if food.strip() == "":
+            st.warning("음식 이름을 입력해주세요.")
+        else:
+            recommendations = recommend_desserts(food, selected_type, selected_calorie, selected_taste)
+            st.markdown("### 🍨 추천 디저트 리스트")
+            for d in recommendations:
+                if isinstance(d, str):
+                    st.write(d)
+                else:
+                    level = calorie_level(d["calorie"])
+                    st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
 with tab3:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
