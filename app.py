@@ -277,7 +277,7 @@ with tab2:
 
 
 with tab3:
-    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
+    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r')
     st.header("🏆 만개의 레시피 베스트 순위")
     
     # 페이지네이션 설정
