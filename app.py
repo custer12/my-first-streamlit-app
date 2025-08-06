@@ -555,55 +555,17 @@ with tab4:
         st.stop()
     else:
         st.success(f"✅ {len(BEST_RECIPES)}개의 레시피를 성공적으로 불러왔습니다!")
-    
-    # 필터링 옵션
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        filter_category = st.selectbox(
-            "카테고리 필터", 
-            ["전체"] + list(set([recipe["category"] for recipe in BEST_RECIPES])),
-            key="filter_cat"
-        )
-    
-    with col2:
-        filter_difficulty = st.selectbox(
-            "난이도 필터",
-            ["전체", "초급", "중급", "고급"],
-            key="filter_diff"
-        )
-    
-    with col3:
-        filter_time = st.selectbox(
-            "조리시간 필터",
-            ["전체", "5-15분", "15-30분", "30분-1시간"],
-            key="filter_time"
-        )
-    
-    # 필터링된 레시피들
-    filtered_recipes = BEST_RECIPES.copy()
-    
-    if filter_category != "전체":
-        filtered_recipes = [r for r in filtered_recipes if filter_category in r["category"]]
-    
-    if filter_difficulty != "전체":
-        filtered_recipes = [r for r in filtered_recipes if r["difficulty"] == filter_difficulty]
-        
-    if filter_time != "전체":
-        filtered_recipes = [r for r in filtered_recipes if r["cooking_time"] == filter_time]
-    
+    # 레시피들
+    filtered_recipes = BEST_RECIPES
     st.markdown(f"**검색 결과: {len(filtered_recipes)}개**")
     
     # 레시피 카드 표시
     for recipe in filtered_recipes:
-        with st.expander(f"🏆 {recipe['rank']}위. {recipe['name']}", expanded=False):
+        with st.expander(f"{recipe['title']}"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                st.markdown(f"**👨‍🍳 작성자:** {recipe['author']}")
-                st.markdown(f"**📝 설명:** {recipe['description']}")
-                st.markdown(f"**📊 통계:** 👍 {recipe['likes']:,}개 | 👁️ {recipe['views']} 조회")
-                st.markdown(f"**🔗 출처:** [만개의 레시피에서 보기]({recipe.get('source_url', 'https://www.10000recipe.com')})")
+                st.markdown(f"{recipe}")
                 
                 # 태그 스타일
                 st.markdown(f"""
