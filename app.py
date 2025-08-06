@@ -60,7 +60,7 @@ def get_fallback_recipes(search_url, top_n = 10):
         return []
         
 # 탭 생성
-tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 AI 디저트 추천", "🏆 인기 레시피"])
+tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 디저트 추천", "🏆 인기 레시피"])
 
 with tab1:
     # 페이지 설정
@@ -213,11 +213,9 @@ with tab1:
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
-    st.set_page_config(page_title="🍰 AI 디저트 추천기", page_icon="🍧")
-    
-    st.title("🤖 AI 디저트 추천기")
+    st.title("디저트 추천기")
     st.write("음식을 입력하고, 원하는 디저트 타입, 열량, 맛을 선택하면 어울리는 디저트를 추천해 드려요!")
-    
+
     desserts = [
         {"name": "초코 케이크", "calorie": 400, "type": "케이크", "taste": "진한"},
         {"name": "치즈 케이크", "calorie": 450, "type": "케이크", "taste": "진한"},
@@ -271,39 +269,39 @@ with tab2:
         {"name": "레몬 탄산수", "calorie": 120, "type": "음료수", "taste": "탄산"},
         {"name": "자몽 탄산수", "calorie": 130, "type": "음료수", "taste": "탄산"},
     ]
-    
+
     # 칼로리 350 이상 -> 높음, 미만 -> 낮음
     def calorie_level(cal):
         return "높음" if cal >= 350 else "낮음"
-    
+
     # 필터 선택 옵션 생성
     all_types = ["상관없음"] + sorted(list({d["type"] for d in desserts}))
     all_calorie_levels = ["상관없음", "낮음", "높음"]
     all_tastes = ["상관없음"] + sorted(list({d["taste"] for d in desserts}))
-    
+
     food = st.text_input("🍽️ 음식을 입력하세요:")
-    
+
     selected_type = st.selectbox("🍰 디저트 타입 선택", options=all_types)
     selected_calorie = st.selectbox("🔥 열량 수준 선택", options=all_calorie_levels)
     selected_taste = st.selectbox("😋 디저트 맛 선택", options=all_tastes)
-    
+
     def recommend_desserts(food_name, type_selected, calorie_selected, taste_selected):
         filtered = desserts
-    
+
         if type_selected != "상관없음":
             filtered = [d for d in filtered if d["type"] == type_selected]
-    
+
         if calorie_selected != "상관없음":
             filtered = [d for d in filtered if calorie_level(d["calorie"]) == calorie_selected]
-    
+
         if taste_selected != "상관없음":
             filtered = [d for d in filtered if d["taste"] == taste_selected]
-    
+
         if len(filtered) == 0:
             return ["조건에 맞는 디저트를 찾지 못했습니다."]
         else:
             return random.sample(filtered, min(5, len(filtered)))
-    
+
     if st.button("🍰 디저트 추천해줘!"):
         if food.strip() == "":
             st.warning("음식 이름을 입력해주세요.")
