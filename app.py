@@ -46,13 +46,20 @@ def get_fallback_recipes(search_url, top_n = 5):
             link = "https://www.10000recipe.com" + card.select_one("a")["href"]
             img = card.select_one(".common_sp_thumb img")
             img_url = img["src"] if img and img.has_attr("src") else None
-            summary = card.select_one(".common_sp_caption_desc")
-            summary_text = summary.get_text(strip=True) if summary else ""
+            intro = ""
+            try:
+                detail_res = requests.get(link, headers=headers, timeout=10)
+                detail_res.raise_for_status()
+                detail_soup = BeautifulSoup(detail_res.text, "html.parser")
+                intro_tag = detail_soup.select_one("#recipeIntro")
+                intro = intro_tag.get_text(strip=True) if intro_tag else ""
+            except:
+                pass
             recipes.append({
                 "title": title,
                 "link": link,
                 "img_url": img_url,
-                "summary": summary_text
+                "summary": intro
             })
         return recipes
     except Exception as e:
@@ -188,7 +195,11 @@ with tab1:
                     for idx, recipe in enumerate(recipes, 1):
                         st.markdown(f"### **[ {idx} ] [{recipe['title']}]({recipe['link']})**")
                         if recipe["img_url"]:
-                            st.image(recipe["img_url"], width=150)
+                            col1, col2 = st.columns([1, 3])
+                            with col1:
+                                st.image(recipe["img_url"], width=150)
+                            with col2:
+                                st.markdown(f"{recipe['summary']}")
                         else:
                             st.write("이미지 없음")
                         st.markdown("---")
@@ -476,10 +487,9 @@ with tab4:
         st.warning("레시피 데이터를 불러오는 중입니다...")
         st.stop()
     else:
-        st.success(f"✅ {len(BEST_RECIPES)}개의 레시피를 성공적으로 불러왔습니다!")
+        st.success(f"✅ 레시피를 성공적으로 불러왔습니다!")
     # 레시피들
     filtered_recipes = BEST_RECIPES
-    st.markdown(f"**검색 결과: {len(filtered_recipes)}개**")
     
     # 레시피 카드 표시
     recipe_index = 0
