@@ -214,7 +214,11 @@ with tab1:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
     st.title("디저트 추천기")
-    st.write("음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!")
+    st.markdown("""
+    음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
+    
+    
+    """)
 
     col1, empty1, col2 = st.columns([1,0.05, 1])
     with col1:
