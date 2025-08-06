@@ -196,7 +196,7 @@ with tab1:
                 recipes = get_top5_recipes_from_10000recipe(dish_name)
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
-                        col1, empty1, col2 = st.columns([1, 0.5, 5])
+                        col1, empty1, col2 = st.columns([1, 0.25, 5])
                         with col1:
                             if recipe["img_url"]:
                                 st.image(recipe["img_url"], width=150)
