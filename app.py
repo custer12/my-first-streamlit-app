@@ -58,7 +58,7 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_title_and_summary(url):
+def get_recipe_summary_multiline(url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
