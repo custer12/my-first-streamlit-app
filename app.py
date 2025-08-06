@@ -16,7 +16,7 @@ except KeyError:
     st.stop()
 
 client = OpenAI(
-    api_key,
+    api_key=api_key,
     base_url="https://api.upstage.ai/v1"
 )
 
