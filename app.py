@@ -64,6 +64,7 @@ def get_fallback_recipes(search_url, top_n = 10):
 tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 디저트 추천", "🏆 인기 레시피"])
 
 with tab1:
+    space1 = st.empty()
     # 페이지 설정
     st.title("🍳 AI 레시피 추천")
     # 10000레시피에서 추천 요리 관련 TOP5 레시피를 크롤링하는 함수 (이미지 포함)
@@ -105,12 +106,12 @@ with tab1:
     st.header("🥕 요리 정보 입력")
     ingredients = st.text_area("냉장고 속 재료를 입력하세요", placeholder="예: 계란, 당근, 대파")
     cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["한식", "중식", "양식", "일식", "동남아식", "전체"])
-    space = st.empty()
+    space1 = st.empty()
 
     # 요리 스타일 선택 추가
     style = st.selectbox("요리 스타일을 선택하세요", ["고급", "일반", "간단", "전체"])
     submit = st.button("🍽️ 요리 추천")
-    space = st.empty()
+    space1 = st.empty()
     # 결과 영역
     if submit:
         with st.spinner("요리를 생성 중입니다..."):
@@ -134,7 +135,7 @@ with tab1:
                 f"간단한 설명 (1줄 이내로 요리의 특징이나 매력을 표현)\n"
                 f"AI 즉 당신은 요리의 레시피는 말하면 안됩니다. 그냥 요리의 이름과 간단한 설명만 말해주세요.\n"
             )
-            with space.container():
+            with space1.container():
                 try:
                     # OpenAI 호출
                     response = client.chat.completions.create(
@@ -212,6 +213,7 @@ with tab1:
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
+    space1 = st.empty()
     st.title("디저트 추천기")
     st.markdown("""
     음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
@@ -281,6 +283,7 @@ with tab2:
 
 
 with tab3:
+    space1 = st.empty()
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
     st.header("🏆 레시피 베스트 순위")
     
