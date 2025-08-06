@@ -50,8 +50,8 @@ if submitted and food_name.strip():
         recipes = get_top_recipes(food_name, top_n)
         if recipes:
             st.success(f"'{food_name}'에 대한 인기 레시피 {len(recipes)}개를 찾았습니다!")
-            for recipe in enumerate(recipes, 1):
-                st.markdown(f"### [{recipe['title']}]({recipe['link']})")
+            for idx, recipe in enumerate(recipes, 1):
+                st.markdown(f"### {idx}위. [{recipe['title']}]({recipe['link']})")
                 cols = st.columns([1, 3])
                 with cols[0]:
                     if recipe["img_url"]:
