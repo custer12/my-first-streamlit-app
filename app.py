@@ -68,7 +68,7 @@ with tab1:
     st.title("🍳 AI 요리 추천 챗봇")
     # 10000레시피에서 추천 요리 관련 TOP5 레시피를 크롤링하는 함수 (이미지 포함)
     def get_top5_recipes_from_10000recipe(dish_name):
-        search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name}"
+        search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")}"
         headers = {
             "User-Agent": "Mozilla/5.0"
         }
@@ -191,7 +191,7 @@ with tab1:
                 st.subheader("🍳 '만개의 레시피' 인기 레시피 TOP 5 요약")
                 st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
 
-                recipes = get_top5_recipes_from_10000recipe(dish_name)
+                recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
                         st.markdown(f"### **[ {idx} ] [{recipe['title']}]({recipe['link']})**")
