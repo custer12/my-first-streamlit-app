@@ -562,14 +562,7 @@ with tab4:
     # 레시피 카드 표시
     for recipe in filtered_recipes:
         with st.expander(f"{recipe['title']}"):
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                st.markdown(f"{recipe}")
-            
-            with col2:
-                if st.button(f"🤖 AI 상세 레시피 생성"):
-                    pass
+            st.markdown(f"{recipe}")
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
 st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
