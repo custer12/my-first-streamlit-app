@@ -29,8 +29,7 @@ st.title("🍽️ 고급 AI 음식 추천")
 st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
 
 
-def get_fallback_recipes():
-    search_url = "https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r"
+def get_fallback_recipes(search_url, top_n = 5):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -38,7 +37,7 @@ def get_fallback_recipes():
         res = requests.get(search_url, headers=headers, timeout=10)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
-        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:100]
+        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:top_n]
         recipes = []
         for card in recipe_cards:
             title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
@@ -56,9 +55,6 @@ def get_fallback_recipes():
         return recipes
     except Exception as e:
         return []
-
-# 레시피 데이터 로드
-BEST_RECIPES = get_fallback_recipes()
 
 # 탭 생성
 tab1, tab2, tab3, tab4 = st.tabs(["🎯 음식 추천", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
@@ -539,6 +535,7 @@ with tab3:
 
     '''
 with tab4:
+    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 TOP 10")
     
     col1, col2 = st.columns([3, 1])
