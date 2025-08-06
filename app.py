@@ -22,13 +22,13 @@ client = OpenAI(
 
 # 페이지 설정
 st.set_page_config(
-    page_title="🍽️ 고급 AI 음식 추천", 
+    page_title="AI 음식 추천", 
     page_icon="🍽️",
     layout="wide"
 )
 
-st.title("🍽️ 고급 AI 음식 추천")
-st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
+st.title("AI 음식 추천")
+st.markdown("AI 추천과 레시피 정보를 제공합니다!")
 
 
 def get_fallback_recipes(search_url, top_n = 10):
@@ -64,7 +64,6 @@ tab1, tab2, tab3, tab4 = st.tabs(["🍳 AI 요리 추천 챗봇", "📖 레시�
 
 with tab1:
     # 페이지 설정
-    st.set_page_config(page_title="AI 요리 추천 챗봇", layout="wide")
     st.title("🍳 AI 요리 추천 챗봇")
     # 10000레시피에서 추천 요리 관련 TOP5 레시피를 크롤링하는 함수 (이미지 포함)
     def get_top5_recipes_from_10000recipe(dish_name):
