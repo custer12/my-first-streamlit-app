@@ -271,7 +271,7 @@ with tab2:
     ]
 
     # 칼로리 350 이상 -> 높음, 미만 -> 낮음
-    col1, col2 = st.columns([1, 1])
+    col1, empty1, col2 = st.columns([1,0.1, 1])
     with col1:
         def calorie_level(cal):
             return "높음" if cal >= 350 else "낮음"
@@ -303,7 +303,9 @@ with tab2:
                 return ["조건에 맞는 디저트를 찾지 못했습니다."]
             else:
                 return random.sample(filtered, min(5, len(filtered)))
-
+    with empty1:
+        empty()
+        pass
         if st.button("🍰 디저트 추천해줘!"):
             if food.strip() == "":
                 st.warning("음식 이름을 입력해주세요.")
@@ -319,6 +321,8 @@ with tab2:
                                 level = calorie_level(d["calorie"])
                                 st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
                         st.form_submit_button('확인')
+
+
 with tab3:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
