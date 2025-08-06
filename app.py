@@ -20,5 +20,5 @@ left, middle1, middle2, right = st.columns(4, vertical_alignment="bottom")
 
 left.text_input("Write something")
 middle1.button("Click me", use_container_width=True)
-middle2.success("Click me")
+middle2.success("SUCCESS")
 right.checkbox("Check me")
