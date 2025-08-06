@@ -14,12 +14,12 @@ client = OpenAI(
 )
 
 st.set_page_config(
-    page_title="🎲 AI 빠른 음식 추천",
+    page_title="🎲 AI 음식 추천",
     page_icon="🍽️",
     layout="centered"
 )
 
-st.title("🎲 AI 빠른 음식 추천")
+st.title("🎲 AI 음식 추천")
 st.markdown("카테고리만 선택하면 AI가 랜덤으로 오늘의 음식을 추천해줍니다!")
 
 # 카테고리 선택
@@ -33,11 +33,7 @@ if st.button("🎲 오늘의 음식 추천받기", type="primary"):
         try:
             prompt = f"""
 당신은 음식 추천 전문가입니다. 사용자가 '{category}' 카테고리를 선택했습니다. 오늘 먹으면 좋을만한 음식을 1개 추천하고, 음식에 대한 간단한 설명도 함께 알려주세요. 다음 형식으로 답변하세요:
-
-[음식명]: [간단한 설명]
-
-예시)
-김치찌개: 매콤하고 얼큰한 국물요리로, 밥과 함께 먹기 좋아요.
+음식명
 """
             response = client.chat.completions.create(
                 model="solar-pro2",
