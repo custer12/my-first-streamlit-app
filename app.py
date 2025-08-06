@@ -143,10 +143,6 @@ with tab1:
 
                     reply = response.choices[0].message.content
 
-                    # GPT 응답 출력 영역
-                    st.subheader("🍽️ 추천 요리 결과")
-                    st.markdown("📝 **AI가 추천한 요리입니다!**")
-
                     sections = reply.split("\n\n")
                     for section in sections:
                         st.markdown(section)
@@ -182,8 +178,6 @@ with tab1:
                                 break
                     if not dish_name:
                         dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
-
-                    st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
 
                     recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
                     if recipes:
