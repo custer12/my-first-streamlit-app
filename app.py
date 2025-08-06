@@ -60,11 +60,11 @@ def get_fallback_recipes(search_url, top_n = 10):
         return []
         
 # 탭 생성
-tab1, tab2, tab3, tab4 = st.tabs(["🍳 AI 요리 추천 챗봇", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
+tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 AI 디저트 추천", "🏆 인기 레시피"])
 
 with tab1:
     # 페이지 설정
-    st.title("🍳 AI 요리 추천 챗봇")
+    st.title("🍳 AI 레시피 추천")
     # 10000레시피에서 추천 요리 관련 TOP5 레시피를 크롤링하는 함수 (이미지 포함)
     def get_top5_recipes_from_10000recipe(dish_name):
         search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")}"
@@ -346,132 +346,6 @@ with tab2:
 
     '''
 with tab3:
-    '''
-    st.header("🍳 요리 도우미")
-    
-    # 요리 도우미 기능들
-    helper_option = st.selectbox(
-        "도움이 필요한 부분을 선택하세요:",
-        ["재료 대체법", "조리 팁", "계량 변환", "음식 궁합", "보관법"]
-    )
-    
-    if helper_option == "재료 대체법":
-        st.subheader("🔄 재료 대체법")
-        
-        ingredient = st.text_input("대체하고 싶은 재료를 입력하세요:")
-        
-        if st.button("🔍 대체법 찾기"):
-            if ingredient.strip():
-                with st.spinner("대체법을 찾고 있습니다..."):
-                    try:
-                        substitute_prompt = f"""
-'{ingredient}'의 대체재료를 알려주세요.
-
-다음 형식으로 JSON으로 응답해주세요:
-
-{{
-    "original": "{ingredient}",
-    "substitutes": [
-        {{
-            "name": "대체재료명",
-            "ratio": "대체 비율",
-            "notes": "대체 시 주의사항",
-            "best_for": "어떤 요리에 적합한지"
-        }}
-    ],
-    "tips": "대체 시 일반적인 팁"
-}}
-"""
-
-                        response = client.chat.completions.create(
-                            model="solar-pro2",
-                            messages=[{"role": "user", "content": substitute_prompt}],
-                            stream=False,
-                        )
-                        
-                        try:
-                            sub_result = json.loads(response.choices[0].message.content)
-                            st.session_state.substitute_result = sub_result
-                        except json.JSONDecodeError:
-                            st.session_state.raw_substitute_response = response.choices[0].message.content
-                            
-                    except Exception as e:
-                        st.error(f"오류가 발생했습니다: {str(e)}")
-    
-    elif helper_option == "조리 팁":
-        st.subheader("👨‍🍳 조리 팁")
-        
-        cooking_topic = st.text_input("궁금한 조리법을 입력하세요:")
-        
-        if st.button("💡 팁 받기"):
-            if cooking_topic.strip():
-                with st.spinner("조리 팁을 찾고 있습니다..."):
-                    try:
-                        tip_prompt = f"""
-'{cooking_topic}'에 대한 조리 팁을 알려주세요.
-
-다음 형식으로 JSON으로 응답해주세요:
-
-{{
-    "topic": "{cooking_topic}",
-    "tips": [
-        "조리 팁들"
-    ],
-    "common_mistakes": [
-        "자주 하는 실수들"
-    ],
-    "pro_tips": [
-        "전문가 팁들"
-    ]
-}}
-"""
-
-                        response = client.chat.completions.create(
-                            model="solar-pro2",
-                            messages=[{"role": "user", "content": tip_prompt}],
-                            stream=False,
-                        )
-                        
-                        try:
-                            tip_result = json.loads(response.choices[0].message.content)
-                            st.session_state.tip_result = tip_result
-                        except json.JSONDecodeError:
-                            st.session_state.raw_tip_response = response.choices[0].message.content
-                            
-                    except Exception as e:
-                        st.error(f"오류가 발생했습니다: {str(e)}")
-    
-    # 결과 표시
-    if "substitute_result" in st.session_state:
-        result = st.session_state.substitute_result
-        st.success(f"**{result['original']}**의 대체재료")
-        
-        for sub in result['substitutes']:
-            with st.expander(f"🔄 {sub['name']}"):
-                st.markdown(f"**대체 비율:** {sub['ratio']}")
-                st.markdown(f"**주의사항:** {sub['notes']}")
-                st.markdown(f"**적합한 요리:** {sub['best_for']}")
-        
-        st.info(f"💡 **일반적인 팁:** {result['tips']}")
-    
-    elif "tip_result" in st.session_state:
-        result = st.session_state.tip_result
-        st.success(f"**{result['topic']}** 조리 팁")
-        
-        st.subheader("💡 조리 팁")
-        for tip in result['tips']:
-            st.write(f"• {tip}")
-        
-        st.subheader("❌ 자주 하는 실수")
-        for mistake in result['common_mistakes']:
-            st.write(f"• {mistake}")
-        
-        st.subheader("👨‍🍳 전문가 팁")
-        for pro_tip in result['pro_tips']:
-            st.write(f"• {pro_tip}")
-
-    '''
-with tab4:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
     
