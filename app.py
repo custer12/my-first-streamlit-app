@@ -170,7 +170,6 @@ with tab1:
                                 break
                     if dish_name:
                         break
-                # 만약 위에서 못찾으면, 첫 번째 줄에서 한글+영문+숫자 2글자 이상만 추출
                 if not dish_name:
                     for section in sections:
                         lines = section.strip().split("\n")
@@ -181,11 +180,9 @@ with tab1:
                                 break
                         if dish_name:
                             break
-                # 그래도 못찾으면 재료에서 첫 번째 재료 사용
                 if not dish_name:
                     dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
 
-                # 10000레시피에서 추천 요리 관련 TOP5 레시피 요약 및 링크+이미지 출력
                 st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
 
                 recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
@@ -196,7 +193,7 @@ with tab1:
                             if recipe["img_url"]:
                                 col1, col2 = st.columns([1, 6])
                                 with col1:
-                                    st.image(recipe["img_url"], width=150)
+                                    st.image(recipe["img_url"], width=100)
                                 with col2:
                                     st.markdown(f"{recipe['summary']}")
                                 st.form_submit_button('레시피 보기')
