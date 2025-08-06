@@ -216,6 +216,8 @@ with tab1:
 
             except Exception as e:
                 st.error(f"❌ 오류 발생: {e}")
+    else:
+        st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
     '''
     st.header("📖 레시피 검색")
