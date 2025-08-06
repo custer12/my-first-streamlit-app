@@ -5,6 +5,7 @@ import random
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
+import re
 
 # API 키 설정
 try:
