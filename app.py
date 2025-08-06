@@ -557,8 +557,10 @@ with tab4:
     st.markdown(f"**검색 결과: {len(filtered_recipes)}개**")
     
     # 레시피 카드 표시
+    recipe_index = 0
     for recipe in filtered_recipes:
-        with st.expander(f"{recipe['title']}"):
+        recipe_index += 1
+        with st.expander(f"[ {recipe_index} ] {recipe['title']}"):
             st.markdown(f"{recipe}")
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
