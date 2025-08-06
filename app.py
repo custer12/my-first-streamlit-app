@@ -303,8 +303,6 @@ with tab2:
                 return ["조건에 맞는 디저트를 찾지 못했습니다."]
             else:
                 return random.sample(filtered, min(5, len(filtered)))
-    with empty1:
-        empty()
         pass
         if st.button("🍰 디저트 추천해줘!"):
             if food.strip() == "":
@@ -321,6 +319,8 @@ with tab2:
                                 level = calorie_level(d["calorie"])
                                 st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
                         st.form_submit_button('확인')
+    with empty1:
+        empty()
 
 
 with tab3:
