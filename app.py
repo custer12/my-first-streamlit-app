@@ -216,7 +216,7 @@ with tab2:
     st.title("디저트 추천기")
     st.write("음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!")
 
-    col1, empty1, col2 = st.columns([1,0.1, 1])
+    col1, empty1, col2 = st.columns([1,0.05, 1])
     with col1:
         food = st.text_input("🍽️ 음식을 입력하세요:")
         calorie_options = ["상관없음", "낮음", "높음"]
