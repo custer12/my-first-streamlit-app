@@ -3,6 +3,8 @@ from openai import OpenAI
 import json
 import random
 from datetime import datetime
+import requests
+from bs4 import BeautifulSoup
 
 # API 키 설정
 try:
@@ -26,8 +28,132 @@ st.set_page_config(
 st.title("🍽️ 고급 AI 음식 추천")
 st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
 
+# 만개의 레시피 베스트 데이터
+BEST_RECIPES = [
+    {
+        "rank": 1,
+        "name": "오징어 볶음, 향과 맛이 일품! 백종원 오징어 볶음",
+        "author": "hancy002",
+        "likes": 1253,
+        "views": "492.2만",
+        "category": "해물류",
+        "cooking_time": "15-30분",
+        "difficulty": "중급",
+        "ingredients": ["오징어", "양파", "대파", "고추장", "고춧가루", "간장", "설탕", "마늘"],
+        "description": "백종원 레시피로 만드는 매콤달콤한 오징어볶음입니다."
+    },
+    {
+        "rank": 2,
+        "name": "절대 실패없는 제육볶음 황금레시피",
+        "author": "따봉이kitchen",
+        "likes": 699,
+        "views": "357.8만",
+        "category": "돼지고기",
+        "cooking_time": "30분-1시간",
+        "difficulty": "중급",
+        "ingredients": ["돼지고기", "양파", "대파", "고추장", "간장", "설탕", "마늘", "생강"],
+        "description": "감칠맛과 매운맛이 일품인 제육볶음 황금 레시피입니다."
+    },
+    {
+        "rank": 3,
+        "name": "백종원오이무침,초간단오이무침 만드는 법",
+        "author": "꽃청춘이주부",
+        "likes": 65,
+        "views": "132.5만",
+        "category": "밑반찬",
+        "cooking_time": "5-15분",
+        "difficulty": "초급",
+        "ingredients": ["오이", "양파", "식초", "설탕", "소금", "고춧가루"],
+        "description": "상큼하고 아삭한 오이무침을 간단하게 만드는 방법입니다."
+    },
+    {
+        "rank": 4,
+        "name": "가지볶음 황금레시피:백종원 가지볶음 뚝딱!",
+        "author": "피에스타",
+        "likes": 85,
+        "views": "85.4만",
+        "category": "채소류",
+        "cooking_time": "15-30분",
+        "difficulty": "중급",
+        "ingredients": ["가지", "양파", "대파", "간장", "설탕", "마늘", "참기름"],
+        "description": "부드럽고 맛있는 가지볶음을 만드는 비법입니다."
+    },
+    {
+        "rank": 5,
+        "name": "두부조림 양념장 만드는 법",
+        "author": "시크제이맘",
+        "likes": 540,
+        "views": "337만",
+        "category": "메인반찬",
+        "cooking_time": "15-30분",
+        "difficulty": "초급",
+        "ingredients": ["두부", "간장", "설탕", "마늘", "대파", "고춧가루"],
+        "description": "짭짤달콤한 두부조림으로 밥도둑 반찬입니다."
+    },
+    {
+        "rank": 6,
+        "name": "엄마의 레시피, 소고기 미역국 끓이는 법",
+        "author": "베리츄",
+        "likes": 1409,
+        "views": "481.4만",
+        "category": "국/탕",
+        "cooking_time": "30분-1시간",
+        "difficulty": "중급",
+        "ingredients": ["소고기", "미역", "마늘", "참기름", "간장", "소금"],
+        "description": "집에서 끓이는 진짜 엄마표 미역국입니다."
+    },
+    {
+        "rank": 7,
+        "name": "순두부찌개. 바지락, 고기 없이도 기가 막힌 순두부찌개",
+        "author": "케이쿡",
+        "likes": 1710,
+        "views": "375.1만",
+        "category": "찌개",
+        "cooking_time": "15-30분",
+        "difficulty": "초급",
+        "ingredients": ["순두부", "김치", "대파", "고춧가루", "간장", "마늘"],
+        "description": "간단하지만 깊은 맛의 순두부찌개 황금 레시피입니다."
+    },
+    {
+        "rank": 8,
+        "name": "백종원 노각무침 만드는 법",
+        "author": "꽃청춘이주부",
+        "likes": 197,
+        "views": "84.3만",
+        "category": "밑반찬",
+        "cooking_time": "5-15분",
+        "difficulty": "초급",
+        "ingredients": ["늙은오이", "소금", "식초", "설탕", "고춧가루"],
+        "description": "여름철 별미인 시원한 노각무침입니다."
+    },
+    {
+        "rank": 9,
+        "name": "소불고기 황금 양념 레시피",
+        "author": "스와티라마",
+        "likes": 1073,
+        "views": "460.9만",
+        "category": "소고기",
+        "cooking_time": "30분-1시간",
+        "difficulty": "중급",
+        "ingredients": ["소고기", "양파", "배", "간장", "설탕", "마늘", "참기름"],
+        "description": "달콤짭짤한 소불고기 양념의 황금비율입니다."
+    },
+    {
+        "rank": 10,
+        "name": "백종원 닭볶음탕 만들기",
+        "author": "쥬쥬씨",
+        "likes": 142,
+        "views": "256.1만",
+        "category": "닭고기",
+        "cooking_time": "30분-1시간",
+        "difficulty": "중급",
+        "ingredients": ["닭", "감자", "당근", "양파", "고추장", "간장", "설탕"],
+        "description": "매콤하고 진한 국물이 일품인 닭볶음탕입니다."
+    }
+]
+
 # 탭 생성
-tab1, tab2, tab3 = st.tabs(["🎯 음식 추천", "📖 레시피 검색", "🍳 요리 도우미"])
+tab1, tab2, tab3, tab4 = st.tabs(["🎯 음식 추천", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
 
 with tab1:
     col1, col2 = st.columns([1, 1])
@@ -111,6 +237,16 @@ with tab1:
                 with st.spinner("AI가 완벽한 음식을 찾고 있습니다..."):
                     try:
                         # 프롬프트 구성
+                        # 베스트 레시피 중에서 조건에 맞는 것들 필터링
+                        matching_recipes = []
+                        for recipe in BEST_RECIPES:
+                            if category != "전체" and category in recipe["category"]:
+                                matching_recipes.append(recipe)
+                            elif category == "전체":
+                                matching_recipes.append(recipe)
+                        
+                        recipe_context = "\n".join([f"- {r['name']} ({r['category']}, {r['cooking_time']}, {r['difficulty']})" for r in matching_recipes[:5]])
+                        
                         prompt = f"""
 당신은 음식 추천 전문가입니다. 사용자의 상황과 선호도에 맞는 음식을 추천해주세요.
 
@@ -131,6 +267,10 @@ with tab1:
 - 현재 상황: {situation}
 - 기분: {mood}
 
+**만개의 레시피 인기 요리 참고:**
+{recipe_context}
+
+위의 인기 레시피들을 참고하여 사용자 조건에 맞는 음식을 추천해주세요.
 다음 형식으로 JSON으로 응답해주세요:
 
 {{
@@ -489,6 +629,164 @@ with tab3:
         for pro_tip in result['pro_tips']:
             st.write(f"• {pro_tip}")
 
+with tab4:
+    st.header("🏆 만개의 레시피 베스트 TOP 10")
+    st.markdown("**실시간 인기 레시피** - [만개의 레시피](https://www.10000recipe.com/index.html)에서 가져온 실제 데이터")
+    
+    # 필터링 옵션
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        filter_category = st.selectbox(
+            "카테고리 필터", 
+            ["전체"] + list(set([recipe["category"] for recipe in BEST_RECIPES])),
+            key="filter_cat"
+        )
+    
+    with col2:
+        filter_difficulty = st.selectbox(
+            "난이도 필터",
+            ["전체", "초급", "중급", "고급"],
+            key="filter_diff"
+        )
+    
+    with col3:
+        filter_time = st.selectbox(
+            "조리시간 필터",
+            ["전체", "5-15분", "15-30분", "30분-1시간"],
+            key="filter_time"
+        )
+    
+    # 필터링된 레시피들
+    filtered_recipes = BEST_RECIPES.copy()
+    
+    if filter_category != "전체":
+        filtered_recipes = [r for r in filtered_recipes if filter_category in r["category"]]
+    
+    if filter_difficulty != "전체":
+        filtered_recipes = [r for r in filtered_recipes if r["difficulty"] == filter_difficulty]
+        
+    if filter_time != "전체":
+        filtered_recipes = [r for r in filtered_recipes if r["cooking_time"] == filter_time]
+    
+    st.markdown(f"**검색 결과: {len(filtered_recipes)}개**")
+    
+    # 레시피 카드 표시
+    for recipe in filtered_recipes:
+        with st.expander(f"🏆 {recipe['rank']}위. {recipe['name']}", expanded=False):
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                st.markdown(f"**👨‍🍳 작성자:** {recipe['author']}")
+                st.markdown(f"**📝 설명:** {recipe['description']}")
+                st.markdown(f"**📊 통계:** 👍 {recipe['likes']:,}개 | 👁️ {recipe['views']} 조회")
+                
+                # 태그 스타일
+                st.markdown(f"""
+                <div style="margin: 10px 0;">
+                    <span style="background-color: #ff6b6b; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px;">
+                        🍽️ {recipe['category']}
+                    </span>
+                    <span style="background-color: #4ecdc4; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px;">
+                        ⏰ {recipe['cooking_time']}
+                    </span>
+                    <span style="background-color: #45b7d1; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">
+                        📈 {recipe['difficulty']}
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown("**🥬 주요 재료:**")
+                ingredients_text = ", ".join(recipe['ingredients'][:6])
+                if len(recipe['ingredients']) > 6:
+                    ingredients_text += f" 외 {len(recipe['ingredients']) - 6}개"
+                st.write(ingredients_text)
+                
+                # AI 레시피 생성 버튼
+                if st.button(f"🤖 AI 상세 레시피 생성", key=f"ai_recipe_{recipe['rank']}"):
+                    with st.spinner("AI가 상세 레시피를 생성하고 있습니다..."):
+                        try:
+                            recipe_prompt = f"""
+'{recipe['name']}' 레시피의 상세한 조리법을 만들어주세요.
+
+**기본 정보:**
+- 음식명: {recipe['name']}
+- 카테고리: {recipe['category']}
+- 조리시간: {recipe['cooking_time']}
+- 난이도: {recipe['difficulty']}
+- 주요 재료: {', '.join(recipe['ingredients'])}
+
+다음 형식으로 JSON으로 응답해주세요:
+
+{{
+    "recipe_name": "{recipe['name']}",
+    "ingredients": [
+        {{
+            "name": "재료명",
+            "amount": "양",
+            "note": "준비 방법"
+        }}
+    ],
+    "instructions": [
+        "단계별 조리 과정"
+    ],
+    "tips": [
+        "조리 팁들"
+    ],
+    "nutrition": {{
+        "calories": "칼로리",
+        "servings": "인분"
+    }}
+}}
+
+정확하고 실용적인 레시피를 만들어주세요.
+"""
+                            response = client.chat.completions.create(
+                                model="solar-pro2",
+                                messages=[{"role": "user", "content": recipe_prompt}],
+                                stream=False,
+                            )
+                            
+                            try:
+                                detailed_recipe = json.loads(response.choices[0].message.content)
+                                st.session_state[f"detailed_recipe_{recipe['rank']}"] = detailed_recipe
+                                st.rerun()
+                            except json.JSONDecodeError:
+                                st.error("레시피 생성 중 오류가 발생했습니다.")
+                                
+                        except Exception as e:
+                            st.error(f"오류가 발생했습니다: {str(e)}")
+            
+            # 상세 레시피 표시
+            if f"detailed_recipe_{recipe['rank']}" in st.session_state:
+                detailed = st.session_state[f"detailed_recipe_{recipe['rank']}"]
+                
+                st.markdown("---")
+                st.markdown("### 🍳 AI 생성 상세 레시피")
+                
+                # 재료
+                st.markdown("**📋 재료:**")
+                for ing in detailed.get('ingredients', []):
+                    st.write(f"• {ing['name']}: {ing['amount']} {ing.get('note', '')}")
+                
+                # 조리법
+                st.markdown("**👨‍🍳 조리 과정:**")
+                for i, step in enumerate(detailed.get('instructions', []), 1):
+                    st.write(f"{i}. {step}")
+                
+                # 팁
+                if detailed.get('tips'):
+                    st.markdown("**💡 조리 팁:**")
+                    for tip in detailed['tips']:
+                        st.write(f"• {tip}")
+                
+                # 영양 정보
+                if detailed.get('nutrition'):
+                    nut = detailed['nutrition']
+                    st.markdown(f"**📊 영양 정보:** {nut.get('calories', 'N/A')} | {nut.get('servings', 'N/A')}")
+
 # 푸터
 st.markdown("---")
-st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!") 
+st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
+st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
