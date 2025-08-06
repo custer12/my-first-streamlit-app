@@ -216,63 +216,57 @@ with tab2:
     st.title("디저트 추천기")
     st.write("음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!")
 
-    food = st.text_input("🍽️ 음식을 입력하세요:")
-    calorie_options = ["상관없음", "낮음", "높음"]
-    taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
-    selected_calorie = st.selectbox("🔥 열량 수준 선택", options=calorie_options)
-    selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
+    col1, empty1, col2 = st.columns([1,0.05, 1])
+    with col1:
+        food = st.text_input("🍽️ 음식을 입력하세요:")
+        calorie_options = ["상관없음", "낮음", "높음"]
+        taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
+        selected_calorie = st.selectbox("🔥 열량 수준 선택", options=calorie_options)
+        selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
 
-    def recommend_desserts_ai(food_name, calorie_selected, taste_selected):
-        prompt = (
-            f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
-            f"열량 수준: {calorie_selected if calorie_selected != '상관없음' else '제한 없음'}\n"
-            f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
-            "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
-            "{\n"
-            '  "desserts": [\n'
-            '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명"},\n'
-            '    ...\n'
-            "  ]\n"
-            "}\n"
-        )
-        try:
-            response = client.chat.completions.create(
-                model="solar-pro2",
-                messages=[{"role": "user", "content": prompt}],
-                stream=False
+        def recommend_desserts_ai(food_name, calorie_selected, taste_selected):
+            prompt = (
+                f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
+                f"열량 수준: {calorie_selected if calorie_selected != '상관없음' else '제한 없음'}\n"
+                f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
+                "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
+                "{\n"
+                '  "desserts": [\n'
+                '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명"},\n'
+                '    ...\n'
+                "  ]\n"
+                "}\n"
             )
-            reply = response.choices[0].message.content
-            import re
-            match = re.search(r'\{[\s\S]*\}', reply)
-            if match:
-                json_str = match.group(0)
-            else:
-                json_str = reply
-            data = json.loads(json_str)
-            return data.get("desserts", [])
-        except Exception as e:
-            return [f"AI 추천 오류: {e}"]
-    pass
-    if st.button("🍰 디저트 추천해줘!"):
-        col1, empty1, col2 = st.columns([1,0.05,1])
-        with col1:
-            st.markdown("#### 입력 정보")
-            st.write(f"음식: {food}")
-            st.write(f"열량 수준: {selected_calorie}")
-            st.write(f"맛: {selected_taste}")
-        with col2:
+            try:
+                response = client.chat.completions.create(
+                    model="solar-pro2",
+                    messages=[{"role": "user", "content": prompt}],
+                    stream=False
+                )
+                reply = response.choices[0].message.content
+                import re
+                match = re.search(r'\{[\s\S]*\}', reply)
+                if match:
+                    json_str = match.group(0)
+                else:
+                    json_str = reply
+                data = json.loads(json_str)
+                return data.get("desserts", [])
+            except Exception as e:
+                return [f"AI 추천 오류: {e}"]
+        pass
+        if st.button("🍰 디저트 추천해줘!"):
             if food.strip() == "":
                 st.warning("음식 이름을 입력해주세요.")
             else:
                 recommendations = recommend_desserts_ai(food, selected_calorie, selected_taste)
-                with st.form(key="dessert_form"):
+                with col2:
                     st.markdown("### 🍨 추천 디저트 리스트")
                     for d in recommendations:
                         if isinstance(d, str):
                             st.write(d)
                         else:
                             st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
-                    st.form_submit_button('확인')
     with empty1:
         empty()
 
