@@ -195,7 +195,7 @@ with tab1:
                 recipes = get_top5_recipes_from_10000recipe(dish_name)
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
-                        st.markdown(f"**{idx}. [{recipe['title']}]({recipe['link']})**")
+                        st.markdown(f"**[ {idx} ] [{recipe['title']}]({recipe['link']})**")
                         if recipe["img_url"]:
                             st.image(recipe["img_url"], width=150)
                         else:
