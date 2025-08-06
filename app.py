@@ -292,17 +292,12 @@ with tab3:
     with col1:
         st.markdown("**실시간 인기 레시피** - [만개의 레시피](https://www.10000recipe.com/index.html)에서 가져온 실제 데이터")
     with col2:
-        col2_1, col2_2, col2_3 = st.columns(3)
+        col2_1, col2_2 = st.columns(2)
         with col2_1:
             if st.button("⬅️ 이전", disabled=st.session_state.current_page == 0):
                 st.session_state.current_page = max(0, st.session_state.current_page - 1)
                 st.rerun()
         with col2_2:
-            if st.button("🔄 새로고침", type="secondary"):
-                st.cache_data.clear()
-                st.session_state.current_page = 0
-                st.rerun()
-        with col2_3:
             if st.button("다음 ➡️", disabled=st.session_state.current_page >= total_pages - 1):
                 st.session_state.current_page = min(total_pages - 1, st.session_state.current_page + 1)
                 st.rerun()
