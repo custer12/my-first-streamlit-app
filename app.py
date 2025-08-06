@@ -38,7 +38,7 @@ def get_fallback_recipes():
         res = requests.get(search_url, headers=headers, timeout=10)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
-        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:10]
+        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:100]
         recipes = []
         for card in recipe_cards:
             title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
