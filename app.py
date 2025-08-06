@@ -188,7 +188,7 @@ with tab1:
                                 if recipe["img_url"]:
                                     col1, col2, button = st.columns([1, 6, 3])
                                     with col1:
-                                        empty('a')
+                                        st.image(recipe["img_url"], width=100)
                                     with col2:
                                         st.markdown(f"{recipe['summary']}")
                                     with button:
