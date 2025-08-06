@@ -214,101 +214,40 @@ with tab1:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
     st.title("디저트 추천기")
-    st.write("음식을 입력하고, 원하는 디저트 타입, 열량, 맛을 선택하면 어울리는 디저트를 추천해 드려요!")
+    st.write("음식 이름을 입력하면 AI가 어울리는 디저트를 추천해 드려요!")
 
-    desserts = [
-        {"name": "초코 케이크", "calorie": 400, "type": "케이크", "taste": "진한"},
-        {"name": "치즈 케이크", "calorie": 450, "type": "케이크", "taste": "진한"},
-        {"name": "당근 케이크", "calorie": 380, "type": "케이크", "taste": "달콤"},
-        {"name": "레드벨벳 케이크", "calorie": 420, "type": "케이크", "taste": "달콤"},
-        {"name": "모카 케이크", "calorie": 410, "type": "케이크", "taste": "진한"},
-        {"name": "바닐라 컵케이크", "calorie": 320, "type": "케이크", "taste": "달콤"},
-        {"name": "초코 퐁당", "calorie": 330, "type": "케이크", "taste": "진한"},
-        {"name": "티라미수", "calorie": 390, "type": "케이크", "taste": "진한"},
-        {"name": "딸기 타르트", "calorie": 280, "type": "타르트", "taste": "상큼"},
-        {"name": "체리 타르트", "calorie": 290, "type": "타르트", "taste": "상큼"},
-        {"name": "레몬 타르트", "calorie": 270, "type": "타르트", "taste": "신"},
-        {"name": "블루베리 타르트", "calorie": 300, "type": "타르트", "taste": "상큼"},
-        {"name": "푸딩", "calorie": 250, "type": "푸딩", "taste": "달콤"},
-        {"name": "카라멜 푸딩", "calorie": 280, "type": "푸딩", "taste": "달콤"},
-        {"name": "녹차 아이스크림", "calorie": 200, "type": "아이스크림", "taste": "진한"},
-        {"name": "바닐라 아이스크림", "calorie": 220, "type": "아이스크림", "taste": "달콤"},
-        {"name": "망고 아이스크림", "calorie": 230, "type": "아이스크림", "taste": "상큼"},
-        {"name": "피스타치오 아이스크림", "calorie": 240, "type": "아이스크림", "taste": "진한"},
-        {"name": "민트 아이스크림", "calorie": 210, "type": "아이스크림", "taste": "시원"},
-        {"name": "초코 쿠키", "calorie": 360, "type": "과자", "taste": "진한"},
-        {"name": "아몬드 쿠키", "calorie": 340, "type": "과자", "taste": "짭짤"},
-        {"name": "카라멜 팝콘", "calorie": 310, "type": "과자", "taste": "달콤"},
-        {"name": "마카롱", "calorie": 290, "type": "과자", "taste": "달콤"},
-        {"name": "젤리", "calorie": 180, "type": "과자", "taste": "상큼"},
-        {"name": "블랙베리 젤리", "calorie": 190, "type": "과자", "taste": "상큼"},
-        {"name": "허니 브레드", "calorie": 400, "type": "케이크", "taste": "달콤"},
-        {"name": "피칸 파이", "calorie": 430, "type": "파이", "taste": "진한"},
-        {"name": "호두 파이", "calorie": 420, "type": "파이", "taste": "진한"},
-        {"name": "바나나 스무디", "calorie": 350, "type": "음료수", "taste": "달콤"},
-        {"name": "망고 쉐이크", "calorie": 340, "type": "음료수", "taste": "상큼"},
-        {"name": "레몬 에이드", "calorie": 200, "type": "음료수", "taste": "신"},
-        {"name": "아이스 아메리카노", "calorie": 15, "type": "음료수", "taste": "진한"},
-        {"name": "카라멜 라떼", "calorie": 320, "type": "음료수", "taste": "달콤"},
-        {"name": "허브 티", "calorie": 5, "type": "음료수", "taste": "시원"},
-        {"name": "허니 레몬 티", "calorie": 180, "type": "음료수", "taste": "신"},
-        {"name": "딸기 쉐이크", "calorie": 300, "type": "음료수", "taste": "상큼"},
-        {"name": "바닐라 라떼", "calorie": 310, "type": "음료수", "taste": "달콤"},
-        {"name": "딸기 무스", "calorie": 260, "type": "무스", "taste": "달콤"},
-        {"name": "초코 무스", "calorie": 280, "type": "무스", "taste": "진한"},
-        {"name": "코코넛 무스", "calorie": 270, "type": "무스", "taste": "달콤"},
-        {"name": "체리 무스", "calorie": 240, "type": "무스", "taste": "상큼"},
-        {"name": "팥빙수", "calorie": 150, "type": "아이스크림", "taste": "시원"},
-        {"name": "허니 브레드", "calorie": 400, "type": "케이크", "taste": "달콤"},
-        {"name": "초콜릿 퐁당", "calorie": 330, "type": "케이크", "taste": "진한"},
-        {"name": "딸기 젤리", "calorie": 190, "type": "과자", "taste": "상큼"},
-        {"name": "레몬 셔벗", "calorie": 220, "type": "아이스크림", "taste": "신"},
-        {"name": "콜라", "calorie": 200, "type": "음료수", "taste": "탄산"},
-        {"name": "사이다", "calorie": 190, "type": "음료수", "taste": "탄산"},
-        {"name": "토닉워터", "calorie": 150, "type": "음료수", "taste": "탄산"},
-        {"name": "레몬 탄산수", "calorie": 120, "type": "음료수", "taste": "탄산"},
-        {"name": "자몽 탄산수", "calorie": 130, "type": "음료수", "taste": "탄산"},
-    ]
-
-    # 칼로리 350 이상 -> 높음, 미만 -> 낮음
     col1, empty1, col2 = st.columns([1,0.1, 1])
     with col1:
-        def calorie_level(cal):
-            return "높음" if cal >= 350 else "낮음"
-
-        # 필터 선택 옵션 생성
-        all_types = ["상관없음"] + sorted(list({d["type"] for d in desserts}))
-        all_calorie_levels = ["상관없음", "낮음", "높음"]
-        all_tastes = ["상관없음"] + sorted(list({d["taste"] for d in desserts}))
-
         food = st.text_input("🍽️ 음식을 입력하세요:")
 
-        selected_type = st.selectbox("🍰 디저트 타입 선택", options=all_types)
-        selected_calorie = st.selectbox("🔥 열량 수준 선택", options=all_calorie_levels)
-        selected_taste = st.selectbox("😋 디저트 맛 선택", options=all_tastes)
-
-        def recommend_desserts(food_name, type_selected, calorie_selected, taste_selected):
-            filtered = desserts
-
-            if type_selected != "상관없음":
-                filtered = [d for d in filtered if d["type"] == type_selected]
-
-            if calorie_selected != "상관없음":
-                filtered = [d for d in filtered if calorie_level(d["calorie"]) == calorie_selected]
-
-            if taste_selected != "상관없음":
-                filtered = [d for d in filtered if d["taste"] == taste_selected]
-
-            if len(filtered) == 0:
-                return ["조건에 맞는 디저트를 찾지 못했습니다."]
-            else:
-                return random.sample(filtered, min(5, len(filtered)))
+        def recommend_desserts_ai(food_name):
+            prompt = (
+                f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
+                f"아래 형식의 JSON으로 추천해줘:\n"
+                "{\n"
+                '  "desserts": [\n'
+                '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명"},\n'
+                '    ...\n'
+                "  ]\n"
+                "}\n"
+            )
+            try:
+                response = client.chat.completions.create(
+                    model="solar-pro2",
+                    messages=[{"role": "user", "content": prompt}],
+                    stream=False
+                )
+                reply = response.choices[0].message.content
+                data = json.loads(reply)
+                return data.get("desserts", [])
+            except Exception as e:
+                return [f"AI 추천 오류: {e}"]
         pass
         if st.button("🍰 디저트 추천해줘!"):
             if food.strip() == "":
                 st.warning("음식 이름을 입력해주세요.")
             else:
-                recommendations = recommend_desserts(food, selected_type, selected_calorie, selected_taste)
+                recommendations = recommend_desserts_ai(food)
                 with col2:
                     with st.form(key="dessert_form"):
                         st.markdown("### 🍨 추천 디저트 리스트")
@@ -316,8 +255,7 @@ with tab2:
                             if isinstance(d, str):
                                 st.write(d)
                             else:
-                                level = calorie_level(d["calorie"])
-                                st.write(f"- **{d['name']}** ({level} 열량, {d['type']}, {d['taste']} 맛)")
+                                st.write(f"- **{d['name']}** ({d['type']}, {d['calorie']}kcal, {d['taste']} 맛) - {d['description']}")
                         st.form_submit_button('확인')
     with empty1:
         empty()
