@@ -199,7 +199,7 @@ with tab1:
                                         display: none !important;
                                     }
                                     </style>
-                                    """, unsafe_allow_html=True)
+                                    """, unsafe_allow_html=False)
                                     st.markdown(f"[🍽️ 레시피 보기]({recipe['link']})")
                         st.markdown(f"## {dish_name} 관련 레시피")
                         st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
