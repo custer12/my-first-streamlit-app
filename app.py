@@ -194,6 +194,7 @@ with tab1:
                                     with button:
                                         if st.form_submit_button('레시피 보기'):
                                             st.markdown(f"[레시피 보기]({recipe['link']})")
+                                            st.sleep(2)
                                 else:
                                     col1, col2, button = st.columns([1, 6, 3])
                                     with col1:
