@@ -112,6 +112,7 @@ with tab1:
     # 결과 영역
     if submit:
         with st.spinner("요리를 생성 중입니다..."):
+            st.markdown("---")
             space = st.empty()
 
             # 스타일별로 AI에게 줄 추가 설명 문구 정의
@@ -210,7 +211,6 @@ with tab1:
                     st.error(f"❌ 오류 발생: {e}")
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
-    st.markdown("---")
 with tab2:
     st.title("디저트 추천기")
     st.markdown("""
