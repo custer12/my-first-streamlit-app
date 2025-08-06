@@ -192,17 +192,17 @@ with tab1:
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
                         with st.form(f'dish_{idx}'):
-                            st.markdown(f"## **[ {idx} ] [{recipe['title']}]**")
+                            st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
                             if recipe["img_url"]:
                                 col1, col2 = st.columns([1, 6])
                                 with col1:
                                     st.image(recipe["img_url"], width=150)
                                 with col2:
                                     st.markdown(f"{recipe['summary']}")
-                                st.form_submit_button('ㅁ')
+                                st.form_submit_button('레시피 보기')
                             else:
                                 st.write("이미지 없음")
-                    st.markdown(f"### {dish_name} 관련 레시피")
+                    st.markdown(f"## {dish_name} 관련 레시피")
                     st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
