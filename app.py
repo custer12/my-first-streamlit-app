@@ -277,14 +277,18 @@ with tab2:
 
 
 with tab3:
-    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r')
-    st.header("🏆 만개의 레시피 베스트 순위")
+    @st.cache_data(ttl=300)  # 5분간 캐싱
+    def get_cached_recipes():
+        return get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
+    
+    BEST_RECIPES = get_cached_recipes()
+    st.header("🏆 레시피 베스트 순위")
     
     # 페이지네이션 설정
     if 'current_page' not in st.session_state:
         st.session_state.current_page = 0
     
-    items_per_page = 3
+    items_per_page = 10
     total_items = len(BEST_RECIPES)
     total_pages = (total_items + items_per_page - 1) // items_per_page
     
@@ -296,11 +300,9 @@ with tab3:
         with col2_1:
             if st.button("⬅️ 이전", disabled=st.session_state.current_page == 0):
                 st.session_state.current_page = max(0, st.session_state.current_page - 1)
-                st.rerun()
         with col2_2:
             if st.button("다음 ➡️", disabled=st.session_state.current_page >= total_pages - 1):
                 st.session_state.current_page = min(total_pages - 1, st.session_state.current_page + 1)
-                st.rerun()
     
     # 페이지 정보 표시
     st.markdown(f"**페이지 {st.session_state.current_page + 1} / {total_pages}**")
