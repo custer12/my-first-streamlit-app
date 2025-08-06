@@ -280,27 +280,51 @@ with tab3:
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
     st.header("🏆 만개의 레시피 베스트 순위")
     
+    # 페이지네이션 설정
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = 0
+    
+    items_per_page = 3
+    total_items = len(BEST_RECIPES)
+    total_pages = (total_items + items_per_page - 1) // items_per_page
+    
     col1, col2 = st.columns([3, 1])
     with col1:
         st.markdown("**실시간 인기 레시피** - [만개의 레시피](https://www.10000recipe.com/index.html)에서 가져온 실제 데이터")
     with col2:
-        if st.button("🔄 레시피 새로고침", type="secondary"):
-            st.cache_data.clear()
-            st.rerun()
+        col2_1, col2_2, col2_3 = st.columns(3)
+        with col2_1:
+            if st.button("⬅️ 이전", disabled=st.session_state.current_page == 0):
+                st.session_state.current_page = max(0, st.session_state.current_page - 1)
+                st.rerun()
+        with col2_2:
+            if st.button("🔄 새로고침", type="secondary"):
+                st.cache_data.clear()
+                st.session_state.current_page = 0
+                st.rerun()
+        with col2_3:
+            if st.button("다음 ➡️", disabled=st.session_state.current_page >= total_pages - 1):
+                st.session_state.current_page = min(total_pages - 1, st.session_state.current_page + 1)
+                st.rerun()
+    
+    # 페이지 정보 표시
+    st.markdown(f"**페이지 {st.session_state.current_page + 1} / {total_pages}**")
     
     # 데이터 로딩 상태 표시
     if len(BEST_RECIPES) == 0:
         st.warning("레시피 데이터를 불러오는 중입니다...")
         st.stop()
     else:
-        st.success(f"✅ 레시피를 성공적으로 불러왔습니다!")
-    # 레시피들
-    filtered_recipes = BEST_RECIPES
+        st.success(f"✅ {len(BEST_RECIPES)}개의 레시피를 성공적으로 불러왔습니다!")
+    
+    # 현재 페이지에 해당하는 레시피들만 표시
+    start_idx = st.session_state.current_page * items_per_page
+    end_idx = min(start_idx + items_per_page, total_items)
+    current_recipes = BEST_RECIPES[start_idx:end_idx]
     
     # 레시피 카드 표시
-    recipe_index = 0
-    for recipe in filtered_recipes:
-        recipe_index += 1
+    for i, recipe in enumerate(current_recipes):
+        recipe_index = start_idx + i + 1
         with st.expander(f"[ {recipe_index} ] {recipe['title']}"):
             st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
             st.markdown(f"{recipe['summary']}")
