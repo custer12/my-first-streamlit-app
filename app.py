@@ -57,6 +57,24 @@ def get_fallback_recipes(search_url, top_n = 5):
     except Exception as e:
         return []
 
+
+def get_recipe_summary(recipe_url):
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    try:
+        res = requests.get(recipe_url, headers=headers, timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "html.parser")
+        summary_div = soup.select_one("div.view2_summary_in")
+        if summary_div:
+            return summary_div.get_text(strip=True)
+        else:
+            return "요약 정보를 찾을 수 없습니다."
+    except Exception as e:
+        return f"오류 발생: {e}"
+
+
 # 탭 생성
 tab1, tab2, tab3, tab4 = st.tabs(["🍳 AI 요리 추천 챗봇", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
 
@@ -201,7 +219,7 @@ with tab1:
                             else:
                                 st.write("이미지 없음")
                         with cols[1]:
-                            st.write(recipe["summary"] if recipe["summary"] else "설명 없음")
+                            st.write(f"{get_recipe_summary(recipe["img_url"])}")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
