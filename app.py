@@ -112,6 +112,7 @@ with tab1:
 
     # 결과 영역
     if submit:
+        space = st.empty()
         with st.spinner("요리를 생성 중입니다..."):
 
             # 스타일별로 AI에게 줄 추가 설명 문구 정의
@@ -132,88 +133,88 @@ with tab1:
                 f"2. 간단한 설명 (1줄 이내로 요리의 특징이나 매력을 표현)\n"
                 f"3. AI 즉 당신은 요리의 레시피는 말하면 안됩니다. 그냥 요리의 이름과 간단한 설명만 말해주세요.\n"
             )
+            with space():
+                try:
+                    # OpenAI 호출
+                    response = client.chat.completions.create(
+                        model="solar-pro2",
+                        messages=[{"role": "user", "content": prompt}],
+                        stream=False
+                    )
 
-            try:
-                # OpenAI 호출
-                response = client.chat.completions.create(
-                    model="solar-pro2",
-                    messages=[{"role": "user", "content": prompt}],
-                    stream=False
-                )
+                    reply = response.choices[0].message.content
 
-                reply = response.choices[0].message.content
+                    # GPT 응답 출력 영역
+                    st.subheader("🍽️ 추천 요리 결과")
+                    st.markdown("📝 **AI가 추천한 요리입니다!**")
 
-                # GPT 응답 출력 영역
-                st.subheader("🍽️ 추천 요리 결과")
-                st.markdown("📝 **AI가 추천한 요리입니다!**")
+                    sections = reply.split("\n\n")
+                    for section in sections:
+                        st.markdown(section)
 
-                sections = reply.split("\n\n")
-                for section in sections:
-                    st.markdown(section)
-
-                # dish_name 추출 개선: 다양한 형식 대응 및 한글/영문/숫자 추출
-                dish_name = None
-                # 1. "1. 요리 이름 : 김치볶음밥" 또는 "1. 김치볶음밥" 또는 "1) 김치볶음밥" 등 다양한 케이스 대응
-                for section in sections:
-                    lines = section.strip().split("\n")
-                    for line in lines:
-                        # "1. 요리 이름 : ..." 또는 "1. ..." 또는 "1) ..." 등
-                        m = re.match(r"^\s*1[.)]?\s*(요리\s*이름)?\s*[:\-]?\s*(.+)", line)
-                        if m:
-                            # m.group(2)에 요리 이름이 들어감
-                            candidate = m.group(2).strip()
-                            # 한글, 영문, 숫자, 공백만 남기고 추출
-                            candidate = re.sub(r"[^가-힣a-zA-Z0-9\s]", "", candidate)
-                            # 너무 짧거나 이상하면 무시
-                            if len(candidate) > 1:
-                                dish_name = candidate
-                                break
-                    if dish_name:
-                        break
-                if not dish_name:
+                    # dish_name 추출 개선: 다양한 형식 대응 및 한글/영문/숫자 추출
+                    dish_name = None
+                    # 1. "1. 요리 이름 : 김치볶음밥" 또는 "1. 김치볶음밥" 또는 "1) 김치볶음밥" 등 다양한 케이스 대응
                     for section in sections:
                         lines = section.strip().split("\n")
                         for line in lines:
-                            candidate = re.findall(r"[가-힣a-zA-Z0-9 ]{2,}", line)
-                            if candidate:
-                                dish_name = candidate[0].strip()
-                                break
+                            # "1. 요리 이름 : ..." 또는 "1. ..." 또는 "1) ..." 등
+                            m = re.match(r"^\s*1[.)]?\s*(요리\s*이름)?\s*[:\-]?\s*(.+)", line)
+                            if m:
+                                # m.group(2)에 요리 이름이 들어감
+                                candidate = m.group(2).strip()
+                                # 한글, 영문, 숫자, 공백만 남기고 추출
+                                candidate = re.sub(r"[^가-힣a-zA-Z0-9\s]", "", candidate)
+                                # 너무 짧거나 이상하면 무시
+                                if len(candidate) > 1:
+                                    dish_name = candidate
+                                    break
                         if dish_name:
                             break
-                if not dish_name:
-                    dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
+                    if not dish_name:
+                        for section in sections:
+                            lines = section.strip().split("\n")
+                            for line in lines:
+                                candidate = re.findall(r"[가-힣a-zA-Z0-9 ]{2,}", line)
+                                if candidate:
+                                    dish_name = candidate[0].strip()
+                                    break
+                            if dish_name:
+                                break
+                    if not dish_name:
+                        dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
 
-                st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
+                    st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
 
-                recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
-                if recipes:
-                    for idx, recipe in enumerate(recipes, 1):
-                        with st.form(f'dish_{idx}'):
-                            st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
-                            if recipe["img_url"]:
-                                col1, col2, button = st.columns([1, 6, 3])
-                                with col1:
-                                    st.image(recipe["img_url"], width=100)
-                                with col2:
-                                    st.markdown(f"{recipe['summary']}")
-                                with button:
-                                    st.form_submit_button('레시피 보기')
-                            else:
-                                col1, col2, button = st.columns([1, 6, 3])
-                                with col1:
-                                    empty('a')
-                                with col2:
-                                    st.markdown(f"{recipe['summary']}")
-                                with button:
-                                    st.form_submit_button('레시피 보기')
-                                pass
-                    st.markdown(f"## {dish_name} 관련 레시피")
-                    st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
-                else:
-                    st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
+                    recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
+                    if recipes:
+                        for idx, recipe in enumerate(recipes, 1):
+                            with st.form(f'dish_{idx}'):
+                                st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
+                                if recipe["img_url"]:
+                                    col1, col2, button = st.columns([1, 6, 3])
+                                    with col1:
+                                        st.image(recipe["img_url"], width=100)
+                                    with col2:
+                                        st.markdown(f"{recipe['summary']}")
+                                    with button:
+                                        st.form_submit_button('레시피 보기')
+                                else:
+                                    col1, col2, button = st.columns([1, 6, 3])
+                                    with col1:
+                                        empty('a')
+                                    with col2:
+                                        st.markdown(f"{recipe['summary']}")
+                                    with button:
+                                        st.form_submit_button('레시피 보기')
+                                    pass
+                        st.markdown(f"## {dish_name} 관련 레시피")
+                        st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
+                    else:
+                        st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
 
-            except Exception as e:
-                st.error(f"❌ 오류 발생: {e}")
+                except Exception as e:
+                    st.error(f"❌ 오류 발생: {e}")
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
