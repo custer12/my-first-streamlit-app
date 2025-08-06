@@ -16,8 +16,9 @@ with col4:
 
 import streamlit as st
 
-left, middle, right = st.columns(3, vertical_alignment="bottom")
+left, middle1, middle2, right = st.columns(4, vertical_alignment="bottom")
 
 left.text_input("Write something")
-middle.button("Click me", use_container_width=True)
+middle1.button("Click me", use_container_width=True)
+middle2.button("Click me", use_container_width=True)
 right.checkbox("Check me")
