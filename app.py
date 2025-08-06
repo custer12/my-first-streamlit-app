@@ -259,7 +259,8 @@ with tab2:
                 return [f"AI 추천 오류: {e}"]
         pass
         if st.button("🍰 디저트 추천해줘!"):
-            recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
+            with st.spinner("AI가 디저트를 추천하고 있습니다..."):
+                recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
             with col2:
                 with st.form(key="dessert_form"):
                     st.markdown("### 🍨 추천 디저트 리스트")
