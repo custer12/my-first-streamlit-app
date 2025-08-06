@@ -1,36 +1,48 @@
 import streamlit as st
 import requests
-from bs4 import BeautifulSoup
+    
+API_KEY= st.secrets["UPSTAGE_API_KEY"]
 
 @st.cache_data(ttl=1800)
-def crawl_best_recipes():
-    url = "https://www.10000recipe.com/index.html"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    resp = requests.get(url, headers=headers, timeout=10)
+def fetch_recipes(API_KEY, start=1, end=10, recipe_name=None):
+    base = "http://openapi.foodsafetykorea.go.kr/api"
+    params = f"{API_KEY}/COOKRCP01/json/{start}/{end}"
+    if recipe_name:
+        params += f"/RCP_NM={recipe_name}"
+    url = f"{base}/{params}"
+    resp = requests.get(url, timeout=10)
     resp.raise_for_status()
-    soup = BeautifulSoup(resp.content, 'html.parser')
-
-    # 인기 레시피 박스 찾기
-    section = soup.select_one('ul.rcp_m_list')  # 실제 구조 확인 필요
+    data = resp.json()
+    rows = data.get("COOKRCP01", {}).get("row", [])
     recipes = []
-
-    if section:
-        items = section.select('li.common_sp_list_li a.common_sp_link')[:10]
-        for a in items:
-            title = a.select_one('.common_sp_caption_tit').get_text(strip=True)
-            href = a.get('href')
-            full_link = f"https://www.10000recipe.com{href}" if href else "#"
-            recipes.append({"title": title, "link": full_link})
-
+    for r in rows:
+        recipes.append({
+            "name": r.get("RCP_NM"),
+            "category": r.get("RCP_PAT2"),
+            "image": r.get("ATT_FILE_NO_MAIN"),
+            "recipe_id": r.get("RCP_SEQ"),
+        })
     return recipes
 
-# Streamlit UI
-st.set_page_config(page_title="🍽️ 인기 레시피 제목 크롤링", page_icon="🍽️")
-st.title("🍽️ 만개의레시피 인기 레시피")
+st.set_page_config(page_title="🍽️ 레시피 검색", layout="wide")
+st.title("식품안전처 Recipe DB 검색")
 
-data = crawl_best_recipes()
-if data:
-    for i, item in enumerate(data, 1):
-        st.markdown(f"{i}. [{item['title']}]({item['link']})")
-else:
-    st.warning("😢 인기 레시피를 찾을 수 없습니다.")
+API_KEY = st.text_input("API 키를 입력하세요", type="password")
+recipe_name = st.text_input("검색할 음식명 (선택 사항)")
+num = st.number_input("가져올 개수", min_value=1, max_value=100, value=10)
+
+if st.button("🔍 레시피 불러오기"):
+    if not API_KEY:
+        st.error("❌ API 키가 필요합니다.")
+    else:
+        try:
+            recipes = fetch_recipes(API_KEY, 1, num, recipe_name or None)
+            if recipes:
+                for idx, rec in enumerate(recipes, 1):
+                    st.markdown(f"### {idx}. {rec['name']} ({rec['category']})")
+                    if rec['image']:
+                        st.image(rec['image'], width=200)
+            else:
+                st.warning("검색 결과가 없습니다.")
+        except Exception as e:
+            st.error(f"API 호출 중 오류 발생: {e}")
