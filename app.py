@@ -561,7 +561,15 @@ with tab4:
     for recipe in filtered_recipes:
         recipe_index += 1
         with st.expander(f"[ {recipe_index} ] {recipe['title']}"):
-            st.markdown(f"{recipe}")
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.image(f"{recipe['img_url']}")
+            with col2:
+                st.link_button(f"{recipe['link']}")
+            st.markdown(f"{recipe['summary']}")
+
+
+
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
 st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
