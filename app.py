@@ -566,21 +566,6 @@ with tab4:
             
             with col1:
                 st.markdown(f"{recipe}")
-                
-                # 태그 스타일
-                st.markdown(f"""
-                <div style="margin: 10px 0;">
-                    <span style="background-color: #ff6b6b; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px;">
-                        🍽️ {recipe['category']}
-                    </span>
-                    <span style="background-color: #4ecdc4; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px;">
-                        ⏰ {recipe['cooking_time']}
-                    </span>
-                    <span style="background-color: #45b7d1; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">
-                        📈 {recipe['difficulty']}
-                    </span>
-                </div>
-                """, unsafe_allow_html=True)
             
             with col2:
                 st.markdown("**🥬 주요 재료:**")
