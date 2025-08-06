@@ -310,7 +310,8 @@ with tab3:
         st.warning("레시피 데이터를 불러오는 중입니다...")
         st.stop()
     else:
-        st.success(f"✅ {len(BEST_RECIPES)}개의 레시피를 성공적으로 불러왔습니다!")
+        # 데이터 로딩 성공
+        pass
     
     # 현재 페이지에 해당하는 레시피들만 표시
     start_idx = st.session_state.current_page * items_per_page
