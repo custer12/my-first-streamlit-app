@@ -222,7 +222,7 @@ with tab1:
                             else:
                                 st.write("이미지 없음")
                         with cols[1]:
-                            st.write(f"{get_recipe_summary(recipe["img_url"])}")
+                            st.write(f"{get_recipe_summary_multiline(recipe["img_url"])}")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
