@@ -58,7 +58,7 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_summary_multiline(url):
+def get_recipe_title_and_summary(url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -67,15 +67,20 @@ def get_recipe_summary_multiline(url):
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
 
-        # 제목
-        title_tag = soup.select_one("div.view2_summary.st3 > h3")
+        container = soup.select_one("div#contents_area_full")
+
+        # 제목 (h3)
+        title_tag = container.select_one("div.view2_summary.st3 > h3") if container else None
         title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
 
-        # 요약
-        summary_tag = soup.select_one("div.view2_summary_in#recipeIntro")
-        summary = summary_tag.get_text(strip=True) if summary_tag else "요약 없음"
+        # 요약 (div#recipeIntro)
+        summary_tag = container.select_one("div#recipeIntro") if container else None
+        summary = summary_tag.get_text(separator="\n", strip=True) if summary_tag else "요약 없음"
 
-        return summary
+        return {
+            "title": title,
+            "summary": summary
+        }
 
     except Exception as e:
         return {"error": str(e)}
@@ -225,7 +230,7 @@ with tab1:
                             else:
                                 st.write("이미지 없음")
                         with cols[1]:
-                            st.write(f"{get_recipe_summary_multiline(recipe["img_url"])}")
+                            st.write(f"{get_recipe_title_and_summary(recipe["img_url"])['title']}")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
