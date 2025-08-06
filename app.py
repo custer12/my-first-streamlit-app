@@ -31,7 +31,7 @@ st.title("🍽️ 고급 AI 음식 추천")
 st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
 
 
-def get_fallback_recipes(search_url, top_n = 5):
+def get_fallback_recipes(search_url, top_n = 10):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -204,6 +204,7 @@ with tab1:
                         else:
                             st.write("이미지 없음")
                         st.markdown("---")
+                    st.markdown(f"[ 더 많이 알아보기 ]({dish_name})")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
 
