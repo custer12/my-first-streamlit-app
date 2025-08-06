@@ -30,7 +30,7 @@ st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
 
 
 def get_fallback_recipes():
-    search_url = "https://www.10000recipe.com/ranking/home_new.html"
+    search_url = "https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r"
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -64,6 +64,8 @@ BEST_RECIPES = get_fallback_recipes()
 tab1, tab2, tab3, tab4 = st.tabs(["🎯 음식 추천", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
 
 with tab1:
+    '''
+
     col1, col2 = st.columns([1, 1])
     
     with col1:
@@ -152,6 +154,7 @@ with tab1:
                         prompt = f"""
 당신은 음식 추천 전문가입니다. 사용자의 상황과 선호도에 맞는 음식을 추천해주세요.
 
+
 **기본 정보:**
 - 카테고리: {category}
 - 예산: {budget}
@@ -201,7 +204,6 @@ with tab1:
     "nutrition_tips": "영양 팁",
     "cooking_advice": "조리 조언"
 }}
-
 최소 5개의 음식을 추천하고, 각각에 대한 상세한 정보를 포함해주세요.
 """
 
@@ -275,7 +277,9 @@ elif "raw_food_response" in st.session_state:
     st.header("🍽️ AI 추천")
     st.markdown(st.session_state.raw_food_response)
 
+    '''
 with tab2:
+    '''
     st.header("📖 레시피 검색")
     
     # 검색 옵션
@@ -407,7 +411,9 @@ with tab2:
                 with nut_cols[3]:
                     st.metric("지방", nutrition['fat'])
 
+    '''
 with tab3:
+    '''
     st.header("🍳 요리 도우미")
     
     # 요리 도우미 기능들
@@ -531,6 +537,7 @@ with tab3:
         for pro_tip in result['pro_tips']:
             st.write(f"• {pro_tip}")
 
+    '''
 with tab4:
     st.header("🏆 만개의 레시피 베스트 TOP 10")
     
