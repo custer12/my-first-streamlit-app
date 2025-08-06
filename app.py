@@ -1,6 +1,6 @@
 import streamlit as st
 
-col1, col2, col3, col4 = st.columns(4)
+col1, empty, col2, empty1, col3, empty2, col4 = st.columns([5,1,1,1,1])
 
 with col1:
     st.header("테스트1")
@@ -14,7 +14,6 @@ with col3:
 with col4:
     st.header("테스트4")
 
-import streamlit as st
 
 left, middle1, middle2, right = st.columns(4, vertical_alignment="bottom")
 
