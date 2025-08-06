@@ -204,7 +204,7 @@ with tab1:
                         else:
                             st.write("이미지 없음")
                         st.markdown("---")
-                    st.markdown(f"[ 더 많이 알아보기 ]({dish_name})")
+                    st.markdown(f"[ 더 많이 알아보기 ](https://www.10000recipe.com/recipe/list.html?q={dish_name})")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
 
