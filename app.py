@@ -183,7 +183,7 @@ with tab1:
                     recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
                     if recipes:
                         for idx, recipe in enumerate(recipes, 1):
-                            with st.form(f'dish_{idx}'):
+                            with st.form(f'dish_{idx}', True):
                                 st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
                                 if recipe["img_url"]:
                                     col1, col2, button = st.columns([1, 6, 3])
