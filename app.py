@@ -133,7 +133,7 @@ with tab1:
                 f"2. 간단한 설명 (1줄 이내로 요리의 특징이나 매력을 표현)\n"
                 f"3. AI 즉 당신은 요리의 레시피는 말하면 안됩니다. 그냥 요리의 이름과 간단한 설명만 말해주세요.\n"
             )
-            with space():
+            with space.container():
                 try:
                     # OpenAI 호출
                     response = client.chat.completions.create(
