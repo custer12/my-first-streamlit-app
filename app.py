@@ -58,23 +58,6 @@ def get_fallback_recipes(search_url, top_n = 5):
         return []
 
 
-def get_recipe_summary_only(url):
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-    try:
-        res = requests.get(url, headers=headers, timeout=10)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, "html.parser")
-
-        summary_tag = soup.select_one("div#recipeIntro")
-        summary = summary_tag.get_text(separator="\n", strip=True) if summary_tag else "요약 없음"
-
-        return summary
-
-    except Exception as e:
-        return f"오류 발생: {e}"
-
 
 # 탭 생성
 tab1, tab2, tab3, tab4 = st.tabs(["🍳 AI 요리 추천 챗봇", "📖 레시피 검색", "🍳 요리 도우미", "🏆 인기 레시피"])
@@ -213,14 +196,10 @@ with tab1:
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
                         st.markdown(f"**{idx}. [{recipe['title']}]({recipe['link']})**")
-                        cols = st.columns([1, 4])
-                        with cols[0]:
-                            if recipe["img_url"]:
-                                st.image(recipe["img_url"], use_container_width=True)
-                            else:
-                                st.write("이미지 없음")
-                        with cols[1]:
-                            st.write(f"{get_recipe_summary_only(recipe["img_url"])}")
+                        if recipe["img_url"]:
+                            st.image(recipe["img_url"], width=16)
+                        else:
+                            st.write("이미지 없음")
                         st.markdown("---")
                 else:
                     st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
