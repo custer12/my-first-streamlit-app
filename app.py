@@ -1,13 +1,12 @@
 import streamlit as st
-from tkinter.tix import COLUMN
 from pyparsing import empty
 
-col1, empty, col2, empty1, col3, empty2, col4 = st.columns([5,1,1,1,1])
+col1, empty0, col2, empty1, col3, empty2, col4 = st.columns([5,1,1,1,1,1,1])
 
 with col1:
     st.header("테스트1")
 
-with empty:
+with empty0:
     empty()
 
 with col2:
