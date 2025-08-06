@@ -27,6 +27,27 @@ st.set_page_config(
     layout="wide"
 )
 
+# CSS로 form submit 버튼 스타일 숨기기
+st.markdown("""
+<style>
+.st-emotion-cache-zh2fnc {
+    display: none !important;
+}
+.stForm {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.stButton > button {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.title("AI 음식 추천")
 st.markdown("AI 추천과 레시피 정보를 제공합니다!")
@@ -193,14 +214,6 @@ with tab1:
                                 with col2:
                                     st.markdown(f"{recipe['summary']}")
                                 with button:
-                                    # CSS로 form submit 버튼 스타일 숨기기
-                                    st.markdown("""
-                                    <style>
-                                    .st-emotion-cache-zh2fnc {
-                                        display: none !important;
-                                    }
-                                    </style>
-                                    """, unsafe_allow_html=True)
                                     st.markdown(f"[🍽️ 레시피 보기]({recipe['link']})")
                                     st.form_submit_button(f"[🍽️ 레시피 보기]")
                         st.markdown(f"## {dish_name} 관련 레시피")
