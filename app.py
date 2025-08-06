@@ -191,12 +191,13 @@ with tab1:
                         with st.form(f'dish_{idx}'):
                             st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
                             if recipe["img_url"]:
-                                col1, col2 = st.columns([1, 6])
+                                col1, col2, button = st.columns([1, 6, 3])
                                 with col1:
                                     st.image(recipe["img_url"], width=100)
                                 with col2:
                                     st.markdown(f"{recipe['summary']}")
-                                st.form_submit_button('레시피 보기')
+                                with button:
+                                    st.form_submit_button('레시피 보기')
                             else:
                                 st.write("이미지 없음")
                     st.markdown(f"## {dish_name} 관련 레시피")
@@ -277,7 +278,7 @@ with tab2:
 
 
 with tab3:
-    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 1000)
+    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
     st.header("🏆 레시피 베스트 순위")
     
     # 페이지네이션 설정
