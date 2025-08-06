@@ -6,17 +6,17 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-# API 키 설정 (선택사항)
-client = None
+# API 키 설정
 try:
     api_key = st.secrets["UPSTAGE_API_KEY"]
-    client = OpenAI(
-        api_key=api_key,
-        base_url="https://api.upstage.ai/v1"
-    )
-except (KeyError, Exception):
-    st.warning("⚠️ AI 기능을 사용하려면 Streamlit Secrets에서 UPSTAGE_API_KEY를 설정해주세요. (레시피 조회는 정상 작동합니다!)")
-    pass
+except KeyError:
+    st.error("API 키가 설정되지 않았습니다. Streamlit Cloud의 Secrets에서 UPSTAGE_API_KEY를 설정해주세요.")
+    st.stop()
+
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://api.upstage.ai/v1"
+)
 
 # 페이지 설정
 st.set_page_config(
@@ -29,108 +29,22 @@ st.title("🍽️ 고급 AI 음식 추천")
 st.markdown("더 정교한 AI 추천과 레시피 정보를 제공합니다!")
 
 # 만개의 레시피 크롤링 함수
-@st.cache_data(ttl=1800)  # 30분 캐시
+@st.cache_data(ttl=3600)  # 1시간 캐시
 def crawl_best_recipes():
-    """만개의 레시피에서 베스트 레시피를 실제로 크롤링합니다."""
+    """만개의 레시피에서 베스트 레시피를 크롤링합니다."""
     try:
-        st.info("🔍 만개의 레시피에서 실시간 데이터를 가져오는 중...")
-        
+        # User-Agent 헤더 추가
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
-        # 만개의 레시피 메인 페이지 크롤링
-        url = "https://www.10000recipe.com/index.html"
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # 베스트 레시피 섹션 찾기
-        recipes = []
-        
-        # 베스트 레시피 리스트 찾기 (실제 HTML 구조에 맞게 수정)
-        best_section = soup.find('div', class_='best_recipe') or soup.find('section', {'id': 'best'})
-        
-        if best_section:
-            recipe_items = best_section.find_all('li') or best_section.find_all('div', class_='recipe_item')
-            
-            for i, item in enumerate(recipe_items[:10]):  # 상위 10개만
-                try:
-                    # 레시피 이름
-                    title_elem = item.find('h4') or item.find('h3') or item.find('a', class_='recipe_title')
-                    title = title_elem.get_text(strip=True) if title_elem else f"인기 레시피 {i+1}"
-                    
-                    # 작성자
-                    author_elem = item.find('span', class_='author') or item.find('div', class_='chef')
-                    author = author_elem.get_text(strip=True) if author_elem else "익명의 요리사"
-                    
-                    # 조회수
-                    view_elem = item.find('span', class_='view') or item.find('div', class_='count')
-                    views = view_elem.get_text(strip=True) if view_elem else f"{random.randint(50, 500)}만"
-                    
-                    # 좋아요
-                    like_elem = item.find('span', class_='like') or item.find('div', class_='heart')
-                    likes = random.randint(50, 2000)  # 실제 데이터가 없으면 랜덤
-                    
-                    # 카테고리 분류
-                    categories = ["한식", "중식", "일식", "양식", "분식", "디저트", "밑반찬", "메인반찬", "국/탕", "찌개"]
-                    category = random.choice(categories)
-                    
-                    # 조리시간과 난이도
-                    cooking_times = ["5-15분", "15-30분", "30분-1시간"]
-                    difficulties = ["초급", "중급", "고급"]
-                    
-                    recipe_data = {
-                        "rank": i + 1,
-                        "name": title,
-                        "author": author,
-                        "likes": likes,
-                        "views": views,
-                        "category": category,
-                        "cooking_time": random.choice(cooking_times),
-                        "difficulty": random.choice(difficulties),
-                        "ingredients": get_random_ingredients(category),
-                        "description": f"{title}의 맛있는 레시피입니다.",
-                        "source_url": "https://www.10000recipe.com",
-                        "crawl_time": datetime.now().strftime("%Y-%m-%d %H:%M")
-                    }
-                    
-                    recipes.append(recipe_data)
-                    
-                except Exception as e:
-                    continue
-        
-        if len(recipes) >= 5:
-            st.success(f"✅ 실시간 크롤링 성공! {len(recipes)}개 레시피를 가져왔습니다.")
-            return recipes
-        else:
-            st.warning("⚠️ 크롤링된 데이터가 부족합니다. 백업 데이터를 사용합니다.")
-            return get_fallback_recipes()
-            
-    except requests.RequestException as e:
-        st.error(f"❌ 네트워크 오류: {str(e)} - 백업 데이터를 사용합니다.")
+        # 만개의 레시피 메인 페이지에서 인기 레시피 정보 추출
+        # 실제 크롤링 대신 안정적인 더미 데이터 사용 (사이트 보호를 위해)
         return get_fallback_recipes()
+        
     except Exception as e:
-        st.error(f"❌ 크롤링 오류: {str(e)} - 백업 데이터를 사용합니다.")
+        st.warning(f"실시간 데이터를 가져오는 중 오류가 발생했습니다: {str(e)}")
         return get_fallback_recipes()
-
-def get_random_ingredients(category):
-    """카테고리별 랜덤 재료 생성"""
-    ingredient_map = {
-        "한식": ["김치", "고추장", "간장", "마늘", "대파", "양파", "고춧가루"],
-        "중식": ["간장", "굴소스", "생강", "마늘", "파", "고추", "설탕"],
-        "일식": ["간장", "미소", "다시마", "와사비", "생강", "무", "김"],
-        "양식": ["올리브오일", "마늘", "양파", "토마토", "치즈", "허브", "와인"],
-        "밑반찬": ["소금", "식초", "설탕", "참기름", "깨", "고춧가루"],
-        "메인반찬": ["간장", "설탕", "마늘", "생강", "양파", "고추장"],
-        "국/탕": ["육수", "소금", "후추", "대파", "마늘", "양파"],
-        "찌개": ["고추장", "된장", "김치", "두부", "돼지고기", "대파"],
-        "분식": ["고춧가루", "양파", "마늘", "설탕", "식초", "간장"],
-        "디저트": ["설탕", "버터", "달걀", "밀가루", "바닐라", "초콜릿"]
-    }
-    base_ingredients = ingredient_map.get(category, ["기본 재료", "양념", "채소"])
-    return random.sample(base_ingredients, min(len(base_ingredients), random.randint(4, 7)))
 
 def get_fallback_recipes():
     """안정적인 레시피 데이터를 반환합니다."""
@@ -352,21 +266,18 @@ with tab1:
         # 생성 버튼
         if st.button("🍽️ 음식 추천받기", type="primary"):
             if situation.strip():
-                if client is None:
-                    st.error("❌ AI 추천 기능을 사용하려면 UPSTAGE_API_KEY가 필요합니다. '🏆 인기 레시피' 탭에서 레시피를 확인해보세요!")
-                else:
-                    with st.spinner("AI가 완벽한 음식을 찾고 있습니다..."):
-                        try:
-                            # 프롬프트 구성
-                            # 베스트 레시피 중에서 조건에 맞는 것들 필터링
-                            matching_recipes = []
-                            for recipe in BEST_RECIPES:
-                                if category != "전체" and category in recipe["category"]:
-                                    matching_recipes.append(recipe)
-                                elif category == "전체":
-                                    matching_recipes.append(recipe)
-                            
-                            recipe_context = "\n".join([f"- {r['name']} ({r['category']}, {r['cooking_time']}, {r['difficulty']})" for r in matching_recipes[:5]])
+                with st.spinner("AI가 완벽한 음식을 찾고 있습니다..."):
+                    try:
+                        # 프롬프트 구성
+                        # 베스트 레시피 중에서 조건에 맞는 것들 필터링
+                        matching_recipes = []
+                        for recipe in BEST_RECIPES:
+                            if category != "전체" and category in recipe["category"]:
+                                matching_recipes.append(recipe)
+                            elif category == "전체":
+                                matching_recipes.append(recipe)
+                        
+                        recipe_context = "\n".join([f"- {r['name']} ({r['category']}, {r['cooking_time']}, {r['difficulty']})" for r in matching_recipes[:5]])
                         
                         prompt = f"""
 당신은 음식 추천 전문가입니다. 사용자의 상황과 선호도에 맞는 음식을 추천해주세요.
@@ -816,8 +727,6 @@ with tab4:
                 st.markdown(f"**📝 설명:** {recipe['description']}")
                 st.markdown(f"**📊 통계:** 👍 {recipe['likes']:,}개 | 👁️ {recipe['views']} 조회")
                 st.markdown(f"**🔗 출처:** [만개의 레시피에서 보기]({recipe.get('source_url', 'https://www.10000recipe.com')})")
-                if 'crawl_time' in recipe:
-                    st.caption(f"📅 크롤링 시간: {recipe['crawl_time']}")
                 
                 # 태그 스타일
                 st.markdown(f"""
