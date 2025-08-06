@@ -186,23 +186,22 @@ with tab1:
                     dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
 
                 # 10000레시피에서 추천 요리 관련 TOP5 레시피 요약 및 링크+이미지 출력
-                st.markdown("---")
-                st.subheader("🍳 '만개의 레시피' 인기 레시피 TOP 5 요약")
                 st.write(f"**{dish_name}**(와)과 관련된 10000레시피 인기 레시피를 요약해서 보여드립니다.")
 
                 recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
                 if recipes:
                     for idx, recipe in enumerate(recipes, 1):
-                        st.markdown(f"### **[ {idx} ] [{recipe['title']}]({recipe['link']})**")
-                        if recipe["img_url"]:
-                            col1, col2 = st.columns([1, 6])
-                            with col1:
-                                st.image(recipe["img_url"], width=150)
-                            with col2:
-                                st.markdown(f"{recipe['summary']}")
-                        else:
-                            st.write("이미지 없음")
-                        st.markdown("---")
+                        with st.form(f'dish_{idx}'):
+                            st.markdown(f"## **[ {idx} ] [{recipe['title']}]**")
+                            if recipe["img_url"]:
+                                col1, col2 = st.columns([1, 6])
+                                with col1:
+                                    st.image(recipe["img_url"], width=150)
+                                with col2:
+                                    st.markdown(f"{recipe['summary']}")
+                                st.form_submit_button('ㅁ')
+                            else:
+                                st.write("이미지 없음")
                     st.markdown(f"## {dish_name} 관련 레시피")
                     st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
                 else:
@@ -217,7 +216,7 @@ with tab2:
     st.markdown("""
     음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
     
-    
+
     """)
 
     col1, empty1, col2 = st.columns([1,0.05, 1])
@@ -268,7 +267,6 @@ with tab2:
                     with st.spinner("AI가 디저트를 추천하고 있습니다..."):
                         recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
                         st.markdown("### 🍨 추천 디저트 리스트")
-                        st.markdown("---")
                         for d in recommendations:
                             if isinstance(d, str):
                                 st.error(d)
