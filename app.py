@@ -262,15 +262,13 @@ def get_fallback_recipes(search_url, top_n = 10):
             link = "https://www.10000recipe.com" + card.select_one("a")["href"]
             imgs = card.select(".common_sp_thumb img")
             img_url = imgs[-1]["src"] if imgs else None
-            summary = card.select_one(".common_sp_caption_desc")
-            summary_text = summary.get_text(strip=True) if summary else ""
-            intro = ""
+            summary = ""
             try:
                 detail_res = requests.get(link, headers=headers, timeout=10)
                 detail_res.raise_for_status()
                 detail_soup = BeautifulSoup(detail_res.text, "html.parser")
                 intro_tag = detail_soup.select_one("#recipeIntro")
-                intro = intro_tag.get_text(strip=True) if intro_tag else ""
+                summary = intro_tag.get_text(strip=True) if intro_tag else ""
             except:
                 pass
             
@@ -278,7 +276,7 @@ def get_fallback_recipes(search_url, top_n = 10):
                 "title": title,
                 "link": link,
                 "img_url": img_url,
-                "summary": intro
+                "summary": summary
             })
         return recipes
     except Exception as e:
