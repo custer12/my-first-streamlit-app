@@ -261,7 +261,7 @@ def get_fallback_recipes(search_url, top_n = 10):
         print('raise_for_status 완료')
         soup = BeautifulSoup(res.text, "html.parser")
         print('BeautifulSoup 파싱 완료')
-        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:10]  # 무조건 10개만
+        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:100]  # 무조건 10개만
         print(f'recipe_cards 개수: {len(recipe_cards)}')
         recipes = []
         detail_links = []
