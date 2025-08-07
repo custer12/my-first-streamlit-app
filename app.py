@@ -154,7 +154,7 @@ with tab1:
                             for idx, recipe in enumerate(recipes, 1):
                                 with st.form(f'dish_{idx}', clear_on_submit=False):
                                     st.markdown(f"### **[ {idx} ] {recipe['title']}**")
-                                    col_img, col_desc, col_btn = st.columns([1, 4])
+                                    col_img, col_desc = st.columns([1, 4])
                                     with col_img:
                                         if recipe["img_url"]:
                                             st.image(recipe["img_url"], use_container_width=True)
