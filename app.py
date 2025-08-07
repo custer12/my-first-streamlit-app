@@ -163,7 +163,12 @@ with tab1:
                                     with col_btn:
                                         st.markdown(
                                             f'''
-                                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                            <div style="
+                                                display: flex;
+                                                justify-content: center;
+                                                align-items: center;
+                                                height: 120px;  /* 상하높이 */
+                                            ">
                                                 <a href="{recipe["link"]}" target="_blank"
                                                    style="
                                                        display: inline-block;
