@@ -328,8 +328,7 @@ with tab3:
     for i, recipe in enumerate(current_recipes):
         recipe_index = start_idx + i + 1
         with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '*~~백종원~~*')}"):
-            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", width = 100)
-            st.markdown(f"{recipe['summary']}")
+            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", width=100)
 
 
 
