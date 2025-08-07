@@ -177,7 +177,7 @@ with tab1:
                                 """
                                 
                                 container_html = f"""
-                                <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
+                                <div style='border: 1px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FFFFFF;'>
                                     <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
                                     {content_box}
                                     {button_html}
