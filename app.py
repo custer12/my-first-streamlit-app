@@ -129,14 +129,14 @@ with tab1:
                         reply = response.choices[0].message.content
                         sections = reply.split("\n\n")
 
-                        # 출력
-                        for section in sections:
-                            st.markdown(section)
-                    
                         # JSON 파싱
                         recipe_data = json.loads(reply)
                         dish_name = recipe_data.get("name", "추천 요리")
                         description = recipe_data.get("description", "")
+                    
+                        # 출력
+                        st.markdown(f"### 🍽️ **{dish_name}**")
+                        st.markdown(f"{description}")
                     
 
                         # ✅ TOP 5 크롤링
