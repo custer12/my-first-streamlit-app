@@ -221,11 +221,11 @@ with tab2:
     space = st.empty()
     with st.form(key="dessert_form"):
         with space.container():
-            food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
+            food = space.text_input("🍽️ 먹었던 음식을 입력하세요:")
             dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
             taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
-            selected_type = st.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
-            selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
+            selected_type = space.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
+            selected_taste = space.selectbox("😋 디저트 맛 선택", options=taste_options)
             # ✅ AI에게 추천 요청
             def recommend_desserts_ai(food_name, type_selected, taste_selected):
                 prompt = (
