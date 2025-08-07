@@ -273,10 +273,10 @@ with tab2:
     with empty1:
         empty()
 
-st.header("🏆 레시피 베스트 순위")
+
 with tab3:
+    st.header("🏆 레시피 베스트 순위")
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
-    
     space1 = st.empty()
     
     # 페이지네이션 설정
