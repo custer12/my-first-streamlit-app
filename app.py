@@ -82,7 +82,7 @@ with tab1:
     space1 = st.empty()
 
     # 요리 스타일 선택 추가
-    style = st.selectbox("요리 스타일을 선택하세요", ["전체""고급", "일반", "간단"])
+    style = st.selectbox("요리 스타일을 선택하세요", ["전체","고급", "일반", "간단"])
     submit = st.button("🍽️ 요리 추천")
     space1 = st.empty()
     # 결과 영역
