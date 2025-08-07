@@ -187,6 +187,7 @@ with tab1:
                                 st.markdown(container_html, unsafe_allow_html=True)
 
                             # 더 보기 링크
+                            st.markdown('')
                             st.link_button(
                                 f"👉 더 많은 레시피 보기",f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(' ', '+')}"
                             )
