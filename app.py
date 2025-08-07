@@ -276,7 +276,6 @@ def get_fallback_recipes(search_url, top_n = 10):
                 "title": title,
                 "link": link,
                 "img_url": img_url,
-                "summary": intro
             })
         return recipes
     except Exception as e:
