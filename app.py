@@ -320,7 +320,7 @@ with tab3:
     # 레시피 카드 표시
     for i, recipe in enumerate(current_recipes):
         recipe_index = start_idx + i + 1
-        with st.expander(f"[ {recipe_index} ] {recipe['title']}"):
+        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
             st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
             st.markdown(f"{recipe['summary']}")
 
@@ -329,3 +329,4 @@ with tab3:
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
 st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
+
