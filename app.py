@@ -154,38 +154,37 @@ with tab1:
                             for idx, recipe in enumerate(recipes, 1):
                                 with st.form(f'dish_{idx}', clear_on_submit=False):
                                     st.markdown(f"### **[ {idx} ] {recipe['title']}**")
-                                    col_img, col_desc, col_btn = st.columns([1, 4, 2])
+                                    col_img, col_desc, col_btn = st.columns([1, 4])
                                     with col_img:
                                         if recipe["img_url"]:
                                             st.image(recipe["img_url"], use_container_width=True)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
-                                    with col_btn:
-                                        st.markdown(
-                                            f'''
-                                            <div style="
-                                                display: flex;
-                                                justify-content: center;
-                                                align-items: center;
-                                                height: 120px;  /* 상하높이 */
-                                            ">
-                                                <a href="{recipe["link"]}" target="_blank"
-                                                   style="
-                                                       display: inline-block;
-                                                       padding: 12px 28px;
-                                                       border: 1px solid #D6D6D9;
-                                                       color: #000000;
-                                                       text-decoration: none;
-                                                       border-radius: 8px;
-                                                       font-size: 24px;
-                                                       font-weight: bold;
-                                                   ">
-                                                   바로 가기
-                                                </a>
-                                            </div>
-                                            ''',
-                                            unsafe_allow_html=True
-                                        )
+                                    st.markdown(
+                                        f'''
+                                        <div style="
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                            height: 120px;  /* 상하높이 */
+                                        ">
+                                            <a href="{recipe["link"]}" target="_blank"
+                                               style="
+                                                   display: inline-block;
+                                                   padding: 12px 28px;
+                                                   border: 1px solid #D6D6D9;
+                                                   color: #000000;
+                                                   text-decoration: none;
+                                                   border-radius: 8px;
+                                                   font-size: 24px;
+                                                   font-weight: bold;
+                                               ">
+                                               바로 가기
+                                            </a>
+                                        </div>
+                                        ''',
+                                        unsafe_allow_html=True
+                                    )
                                     st.form_submit_button(" ", type="tertiary")
 
                             # 더 보기 링크
