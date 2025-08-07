@@ -257,7 +257,7 @@ with tab2:
 
     # 🔁 화면 분기
     if not st.session_state.recommend_mode:
-        with space.form(key="dessert_form"):
+        with space.form(key="dessert_form_enter"):
             food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
             dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
             taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
@@ -269,7 +269,7 @@ with tab2:
                     st.session_state.recommend_mode = True
                     st.rerun()
     else:
-        with space.form():
+        with space.form(key="dessert_form_list"):
             st.markdown("### 🍨 추천 디저트 리스트")
             for d in st.session_state.recommendations:
                 if isinstance(d, str):
