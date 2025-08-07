@@ -87,8 +87,8 @@ with tab1:
     space1 = st.empty()
     # 결과 영역
     if submit:
+        st.markdown("---")
         with st.spinner("요리를 생성 중입니다..."):
-            st.markdown("---")
 
             # 스타일별로 AI에게 줄 추가 설명 문구 정의
             style_description = {
