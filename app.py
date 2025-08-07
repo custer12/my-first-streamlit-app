@@ -160,40 +160,45 @@ with tab1:
                                     content_box = f"""
                                     <div style='display: flex; gap: 20px;'>
                                         <div style='flex: 1;'>
-                                            <img src='{a}' width='95' style='border-radius: 6px;' />
+                                            <img src="{recipe['img_url']}" width='95' style='border-radius: 6px;' />
                                         </div>
                                         <div style='flex: 4; font-size: 14px; color: #333;'>
-                                            {b}
+                                            {recipe['summary']}
                                         </div>
                                     </div>
                                     """
-
+                                    
+                                    button_html = f"""
+                                    <div style='display: flex; justify-content: flex-end; margin-top: 20px;'>
+                                        <a href="{recipe['link']}" target="_blank"
+                                           style='
+                                               display: inline-block;
+                                               padding: 8px 16px;
+                                               border: 1px solid #D6D6D9;
+                                               color: #000000;
+                                               text-decoration: none;
+                                               border-radius: 6px;
+                                               font-size: 15px;
+                                               font-weight: bold;
+                                           '>
+                                           더 알아보기
+                                        </a>
+                                    </div>
+                                    """
+                                    
                                     st.markdown(
                                         f"""
                                         <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
-                                            <h3 style='margin-bottom: 15px;'>{d}</h3>
-
+                                            <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
+                                    
                                             {content_box}
-
-                                            <div style='display: flex; justify-content: flex-end; margin-top: 20px;'>
-                                                <a href='{c}' target='_blank'
-                                                   style='
-                                                       display: inline-block;
-                                                       padding: 8px 16px;
-                                                       border: 1px solid #D6D6D9;
-                                                       color: #000000;
-                                                       text-decoration: none;
-                                                       border-radius: 6px;
-                                                       font-size: 15px;
-                                                       font-weight: bold;
-                                                   '>
-                                                   더 알아보기
-                                                </a>
-                                            </div>
+                                    
+                                            {button_html}
                                         </div>
                                         """,
                                         unsafe_allow_html=True
                                     )
+
 
                                     st.form_submit_button(" ", type="tertiary")
 
