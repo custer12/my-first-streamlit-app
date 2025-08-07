@@ -196,11 +196,13 @@ with tab2:
             title_tag = item.select_one(".txt3")
             txt4_tag = item.select_one(".txt4")
             txt5_tag = item.select_one(".right .txt5")
+            link = f"https://www.pillyze.com{item['href']}" if item.has_attr('href') else ""
 
             return {
                 "title": title_tag.get_text(strip=True) if title_tag else "",
                 "g": txt4_tag.get_text(strip=True) if txt4_tag else "",
-                "kcal": txt5_tag.get_text(strip=True) if txt5_tag else ""
+                "kcal": txt5_tag.get_text(strip=True) if txt5_tag else "",
+                "link": link
             }
 
         except Exception as e:
@@ -268,7 +270,11 @@ with tab2:
                                 elif "error" in data:
                                     st.error(data["error"])
                                 else:
-                                    st.markdown(f"### {data['title']}")
+                                    col1,col2 = st.columns([7, 1])
+                                    with col1():
+                                        st.markdown(f"### {data['title']}")
+                                    with col2():
+                                        st.link_button('더 알아보기', data['link'])
                                     st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
 
     with empty1:
