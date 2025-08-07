@@ -178,40 +178,67 @@ with tab1:
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
 with tab2:
+    def get_item_top1(search_url):
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        try:
+            res = requests.get(search_url, headers=headers, timeout=10)
+            res.raise_for_status()
+            soup = BeautifulSoup(res.text, "html.parser")
+
+            item_list_div = soup.find("div", id="itemList")
+            if not item_list_div:
+                return {"error": "itemList 없음"}
+
+            item = item_list_div.find("a", class_="item-card")
+            if not item:
+                return {"error": "아이템 없음"}
+
+            title_tag = item.select_one(".txt3")
+            txt4_tag = item.select_one(".txt4")
+            txt5_tag = item.select_one(".right .txt5")
+
+            return {
+                "title": title_tag.get_text(strip=True) if title_tag else "",
+                "g": txt4_tag.get_text(strip=True) if txt4_tag else "",
+                "kcal": txt5_tag.get_text(strip=True) if txt5_tag else ""
+            }
+
+        except Exception as e:
+            return {"error": str(e)}
+
+    # ✅ Streamlit 시작
     space1 = st.empty()
     st.title("디저트 추천기")
     st.markdown("""
     음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
-    
-
     """)
 
-    col1, empty1, col2 = st.columns([1,0.05, 1])
+    col1, empty1, col2 = st.columns([1, 0.05, 1])
+
     with col1:
         with st.form(key="dessert_form"):
             food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
             dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
-            calorie_options = ["상관없음", "낮음", "높음"]
             taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
             selected_type = st.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
-            selected_calorie = st.selectbox("🔥 열량 수준 선택", options=calorie_options)
             selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
 
-            def recommend_desserts_ai(food_name, type_selected, calorie_selected, taste_selected):
+            # ✅ AI에게 추천 요청
+            def recommend_desserts_ai(food_name, type_selected, taste_selected):
                 prompt = (
                     f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
                     f"디저트 종류: {type_selected if type_selected != '상관없음' else '제한 없음'}\n"
-                    f"열량 수준: {calorie_selected if calorie_selected != '상관없음' else '제한 없음'}\n"
                     f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
                     "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
                     "{\n"
                     '  "desserts": [\n'
-                    '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명","link":"그 디저트의 인터넷 링크"},\n'
+                    '    {"name": "디저트명", "type": "타입", "taste": "맛", "link":"여기에 띄어쓰기를 +로 바꾼 디저트명 적기"},\n'
                     '    ...\n'
                     "  ]\n"
                     "}\n"
                 )
                 try:
+                    # 너의 OpenAI 클라이언트 객체 (예시)
                     response = client.chat.completions.create(
                         model="solar-pro2",
                         messages=[{"role": "user", "content": prompt}],
@@ -220,34 +247,32 @@ with tab2:
                     reply = response.choices[0].message.content
                     import re
                     match = re.search(r'\{[\s\S]*\}', reply)
-                    if match:
-                        json_str = match.group(0)
-                    else:
-                        json_str = reply
+                    json_str = match.group(0) if match else reply
                     data = json.loads(json_str)
                     return data.get("desserts", [])
                 except Exception as e:
                     return [f"AI 추천 오류: {e}"]
-            pass
+
             if st.form_submit_button("🍰 디저트 추천해줘!"):
                 with col2:
                     space = st.empty()
                     with st.spinner("AI가 디저트를 추천하고 있습니다..."):
-                        recommendations = recommend_desserts_ai(food, selected_type, selected_calorie, selected_taste)
+                        recommendations = recommend_desserts_ai(food, selected_type, selected_taste)
                         with space.container():
                             st.markdown("### 🍨 추천 디저트 리스트")
                             for d in recommendations:
+                                data = get_item_top1(f'https://www.pillyze.com/foods/search?query={d['link']}')
+
                                 if isinstance(d, str):
                                     st.error(d)
+                                elif "error" in data:
+                                    st.error(data["error"])
                                 else:
-                                    st.markdown(f"**🍰 {d['name']}**")
-                                    st.caption(f"타입: {d['type']} | 열량: {d['calorie']} | 맛: {d['taste']}")
-                                    st.write(f"💡 {d['description']}")
-                                    st.link_button(f"**링크**",f'https://www.google.com/search?q={d['name'].replace(' ','+')}')
+                                    st.markdown(f"### {data['title']}")
+                                    st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
+
     with empty1:
-        empty()
-
-
+        pass  # 비워두는 자리
 def get_fallback_recipes(search_url, top_n = 10):
     import concurrent.futures
     print('get_fallback_recipes 진입')
