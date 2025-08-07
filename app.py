@@ -32,33 +32,6 @@ st.title("AI 음식 추천")
 st.markdown("AI 추천과 레시피 정보를 제공합니다!")
 
 
-def get_fallback_recipes(search_url, top_n = 10):
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-    try:
-        res = requests.get(search_url, headers=headers, timeout=10)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, "html.parser")
-        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:top_n]
-        recipes = []
-        for card in recipe_cards:
-            title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
-            link = "https://www.10000recipe.com" + card.select_one("a")["href"]
-            imgs = card.select(".common_sp_thumb img")
-            img_url = imgs[-1]["src"] if imgs else None
-            summary = card.select_one(".common_sp_caption_desc")
-            summary_text = summary.get_text(strip=True) if summary else ""
-            
-            recipes.append({
-                "title": title,
-                "link": link,
-                "img_url": img_url,
-                "summary": summary_text
-            })
-        return recipes
-    except Exception as e:
-        return []
         
 # 탭 생성
 tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 디저트 추천", "🏆 인기 레시피"])
@@ -273,6 +246,43 @@ with tab2:
     with empty1:
         empty()
 
+
+def get_fallback_recipes(search_url, top_n = 10):
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    try:
+        res = requests.get(search_url, headers=headers, timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "html.parser")
+        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:top_n]
+        recipes = []
+        for card in recipe_cards:
+            title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
+            link = "https://www.10000recipe.com" + card.select_one("a")["href"]
+            imgs = card.select(".common_sp_thumb img")
+            img_url = imgs[-1]["src"] if imgs else None
+            summary = card.select_one(".common_sp_caption_desc")
+            summary_text = summary.get_text(strip=True) if summary else ""
+            intro = ""
+            try:
+                detail_res = requests.get(link, headers=headers, timeout=10)
+                detail_res.raise_for_status()
+                detail_soup = BeautifulSoup(detail_res.text, "html.parser")
+                intro_tag = detail_soup.select_one("#recipeIntro")
+                intro = intro_tag.get_text(strip=True) if intro_tag else ""
+            except:
+                pass
+            
+            recipes.append({
+                "title": title,
+                "link": link,
+                "img_url": img_url,
+                "summary": intro
+            })
+        return recipes
+    except Exception as e:
+        return []
 
 with tab3:
     st.header("🏆 레시피 베스트 순위")
