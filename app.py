@@ -157,7 +157,7 @@ with tab1:
                                     col_img, col_desc = st.columns([1, 4])
                                     with col_img:
                                         if recipe["img_url"]:
-                                            st.image(recipe["img_url"], use_container_width=True)
+                                            st.image(recipe["img_url"], width=100)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
                                     st.markdown(
