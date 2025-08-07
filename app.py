@@ -177,6 +177,10 @@ with tab1:
                     st.error(f"❌ 오류 발생: {e}")
     else:
         st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
+    st.markdown("---")
+    st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
+    st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/)") 
+
 with tab2:
     def get_item_top1(search_url):
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -276,6 +280,10 @@ with tab2:
 
     with empty1:
         pass  # 비워두는 자리
+    st.markdown("---")
+    st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
+    st.markdown("📊 **데이터 출처**: [필라이즈](https://www.pillyze.com/) - 영양성분 등등") 
+
 def get_fallback_recipes(search_url, top_n = 10):
     import concurrent.futures
     print('get_fallback_recipes 진입')
@@ -354,8 +362,7 @@ with tab3:
         st.error(f"인기레시피 탭 오류: {e}")
         import traceback
         st.text(traceback.format_exc())
+    st.markdown("---")
+    st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
+    st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/ranking/home_new.html) - 실시간 인기 레시피") 
 
-
-st.markdown("---")
-st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
-st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
