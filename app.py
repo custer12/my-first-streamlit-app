@@ -157,26 +157,24 @@ with tab1:
                                     a = recipe['img_url']
                                     b = recipe['summary']
                                     c = recipe['link']
+                                    content_box = f"""
+                                    <div style='display: flex; gap: 20px;'>
+                                        <div style='flex: 1;'>
+                                            <img src='{recipe['img_url']}' width='95' style='border-radius: 6px;' />
+                                        </div>
+                                        <div style='flex: 4; font-size: 14px; color: #333;'>
+                                            {a}
+                                        </div>
+                                    </div>
+                                    """
+                                    
                                     st.markdown(
                                         f"""
-                                        <div style='
-                                            border: 2px solid #D6D6D9;
-                                            border-radius: 10px;
-                                            padding: 20px;
-                                            margin-top: 20px;
-                                            background-color: #FAFAFA;
-                                        '>
+                                        <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
                                             <h3 style='margin-bottom: 15px;'>{d}</h3>
-
-                                            <div style='display: flex; gap: 20px;'>
-                                                <div style='flex: 1;'>
-                                                    <img src='{a}' width='95' style='border-radius: 6px;' />
-                                                </div>
-                                                <div style='flex: 4; font-size: 14px; color: #333;'>
-                                                    {b}
-                                                </div>
-                                            </div>
-
+                                    
+                                            {content_box}
+                                    
                                             <div style='display: flex; justify-content: flex-end; margin-top: 20px;'>
                                                 <a href='{c}' target='_blank'
                                                    style='
