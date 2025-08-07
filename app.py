@@ -275,9 +275,9 @@ with tab2:
 
 
 with tab3:
-    space1 = st.empty()
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
     st.header("🏆 레시피 베스트 순위")
+    space1 = st.empty()
     
     # 페이지네이션 설정
     if 'current_page' not in st.session_state:
