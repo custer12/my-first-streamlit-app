@@ -47,14 +47,21 @@ def get_fallback_recipes(search_url, top_n = 10):
             link = "https://www.10000recipe.com" + card.select_one("a")["href"]
             imgs = card.select(".common_sp_thumb img")
             img_url = imgs[-1]["src"] if imgs else None
-            summary = card.select_one(".common_sp_caption_desc")
-            summary_text = summary.get_text(strip=True) if summary else ""
+            intro = ""
+            try:
+                detail_res = requests.get(link, headers=headers, timeout=10)
+                detail_res.raise_for_status()
+                detail_soup = BeautifulSoup(detail_res.text, "html.parser")
+                intro_tag = detail_soup.select_one("#recipeIntro")
+                intro = intro_tag.get_text(strip=True) if intro_tag else ""
+            except:
+                pass
             
             recipes.append({
                 "title": title,
                 "link": link,
                 "img_url": img_url,
-                "summary": summary_text
+                "summary": intro
             })
         return recipes
     except Exception as e:
@@ -191,7 +198,7 @@ with tab1:
                                 with col1:
                                     st.image(recipe["img_url"], width=100)
                                 with col2:
-                                    st.markdown(f"{recipe['summary']}")
+                                    st.markdown(f"{recipe['summary'].replace('~~', '')}")
                                 with button:
                                     st.markdown(f"[🍽️ 레시피 보기]({recipe['link']})")
                                     st.form_submit_button(f" ", type="tertiary")
@@ -275,9 +282,9 @@ with tab2:
 
 
 with tab3:
+    space1 = st.empty()
     BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
     st.header("🏆 레시피 베스트 순위")
-    space1 = st.empty()
     
     # 페이지네이션 설정
     if 'current_page' not in st.session_state:
@@ -320,8 +327,8 @@ with tab3:
     # 레시피 카드 표시
     for i, recipe in enumerate(current_recipes):
         recipe_index = start_idx + i + 1
-        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
-            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
+        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '*~~백종원~~*')}"):
+            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", width = 100)
             st.markdown(f"{recipe['summary']}")
 
 
@@ -329,4 +336,3 @@ with tab3:
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
 st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
-
