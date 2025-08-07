@@ -162,21 +162,16 @@ with tab1:
                                         st.markdown(recipe["summary"])
                                     st.markdown(
                                         f'''
-                                        <div style="
-                                            display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                            height: 120px;  /* 상하높이 */
-                                        ">
+                                        <div style="display: flex; justify-content: center; margin-top: 10px;">
                                             <a href="{recipe["link"]}" target="_blank"
                                                style="
                                                    display: inline-block;
-                                                   padding: 12px 28px;
+                                                   padding: 8px 16px;
                                                    border: 1px solid #D6D6D9;
                                                    color: #000000;
                                                    text-decoration: none;
-                                                   border-radius: 8px;
-                                                   font-size: 24px;
+                                                   border-radius: 6px;
+                                                   font-size: 15px;
                                                    font-weight: bold;
                                                ">
                                                바로 가기
