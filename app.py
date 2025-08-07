@@ -168,7 +168,7 @@ with tab1:
                                                    style="
                                                        display: inline-block;
                                                        padding: 6px 14px;
-                                                       border: 2px solid #D6D6D9;
+                                                       border: 1px solid #D6D6D9;
                                                        color: #000000;
                                                        text-decoration: none;
                                                        border-radius: 6px;
