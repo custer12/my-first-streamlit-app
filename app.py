@@ -241,9 +241,9 @@ with tab2:
                                     st.error(d)
                                 else:
                                     st.markdown(f"**🍰 {d['name']}**")
-                                    st.markdown(f"**['링크']({d['link']})**")
                                     st.caption(f"타입: {d['type']} | 열량: {d['calorie']} | 맛: {d['taste']}")
                                     st.write(f"💡 {d['description']}")
+                                    st.link_button(f"**['링크']**",d['link'])
     with empty1:
         empty()
 
