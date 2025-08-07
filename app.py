@@ -254,8 +254,6 @@ with tab2:
             return data.get("desserts", [])
         except Exception as e:
             return [f"AI 추천 오류: {e}"]
-
-    # 🔁 화면 분기
     if not st.session_state.recommend_mode:
         with space.form(key="dessert_form_enter"):
             food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
@@ -265,8 +263,8 @@ with tab2:
             selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
             if st.form_submit_button("🍰 디저트 추천해줘!"):
                 with st.spinner("AI가 디저트를 추천하고 있습니다..."):
-                    st.session_state.recommendations = recommend_desserts_ai(food, selected_type, selected_taste)
                     st.session_state.recommend_mode = True
+                    st.session_state.recommendations = recommend_desserts_ai(food, selected_type, selected_taste)
                     st.rerun()
     else:
         with space.form(key="dessert_form_list"):
@@ -279,7 +277,29 @@ with tab2:
                 if "error" in data:
                     st.error(data["error"])
                 else:
-                    st.markdown(f"### {data['title']} # [[더 알아보기]]({data["link"]})")
+                    #st.markdown(f"### {data['title']} # [[더 알아보기]]({data["link"]})")
+                    st.markdown(
+                        f'''
+                        <div style="display: flex; align-items: center;">
+                            <h3 style="margin: 0;">{data['title']}</h3>
+                            <a href="{data["link"]}" target="_blank"
+                               style="
+                                   display: inline-block;
+                                   margin-left: 10px;
+                                   padding: 6px 14px;
+                                   background-color: #007bff;
+                                   color: white;
+                                   text-decoration: none;
+                                   border-radius: 6px;
+                                   font-size: 14px;
+                                   font-weight: bold;
+                               ">
+                               [ 링크 ]
+                            </a>
+                        </div>
+                        ''',
+                        unsafe_allow_html=True
+                    )
                     st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
             if st.form_submit_button("확인"):
                 st.session_state.recommend_mode = False
