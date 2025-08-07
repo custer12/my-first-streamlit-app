@@ -40,27 +40,27 @@ with tab1:
     # 🧠 AI 레시피 추천 탭
     with st.container():
         st.title("🍳 AI 레시피 추천")
-    
+
         # 👉 컬럼 나누기: 왼쪽 입력, 오른쪽 결과
         col1, col2 = st.columns([1, 2])
-    
+
         # ✅ 10000recipe 크롤링 함수
         def get_top5_recipes_from_10000recipe(dish_name):
             search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(' ', '+')}"
             headers = {"User-Agent": "Mozilla/5.0"}
-    
+
             try:
                 res = requests.get(search_url, headers=headers, timeout=10)
                 res.raise_for_status()
                 soup = BeautifulSoup(res.text, "html.parser")
                 recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:5]
-    
+
                 recipes = []
                 for card in recipe_cards:
                     title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
                     link = "https://www.10000recipe.com" + card.select_one("a")["href"]
                     intro = ""
-    
+
                     try:
                         detail_res = requests.get(link, headers=headers, timeout=10)
                         detail_res.raise_for_status()
@@ -69,21 +69,21 @@ with tab1:
                         intro = intro_tag.get_text(strip=True) if intro_tag else ""
                     except:
                         pass
-                    
+
                     imgs = card.select(".common_sp_thumb img")
                     img_url = imgs[-1]["src"] if imgs else None
-    
+
                     recipes.append({
                         "title": title,
                         "link": link,
                         "summary": intro,
                         "img_url": img_url
                     })
-    
+
                 return recipes
             except:
                 return []
-    
+
         # ✅ 왼쪽: 입력 영역
         with col1:
             st.header("🥕 요리 정보 입력")
@@ -91,12 +91,12 @@ with tab1:
             cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["전체", "한식", "중식", "양식", "일식", "동남아식"])
             style = st.selectbox("요리 스타일을 선택하세요", ["전체", "고급", "일반", "간단"])
             submit = st.button("🍽️ 요리 추천")
-    
+
         # ✅ 오른쪽: 결과 영역
         with col2:
             if submit:
                 with st.spinner("AI가 요리를 추천 중입니다..."):
-                
+
                     # 스타일별 안내 문구
                     style_description = {
                         "고급": "고급요리를 한개 추천해 주세요",
@@ -104,7 +104,7 @@ with tab1:
                         "간단": "초보자도 쉽게 따라 할 수 있는 간단한 요리 스타일로 한개 추천해주세요",
                         "전체": "아무 요리 한개 추천해주세요"
                     }
-    
+
                     prompt = (
                         f"요리를 한개 추천해 주세요\n"
                         f"재료 혹은 음식 : {ingredients}\n"
@@ -115,7 +115,7 @@ with tab1:
                         f"간단한 설명 (1줄 이내)\n"
                         f"레시피는 말하지 말고 이름과 설명만 줘\n"
                     )
-    
+
                     try:
                         # ✅ AI 호출 (예시용 — 실제 모델 호출 코드로 교체 필요)
                         response = client.chat.completions.create(
@@ -125,11 +125,11 @@ with tab1:
                         )
                         reply = response.choices[0].message.content
                         sections = reply.split("\n\n")
-    
+
                         # 출력
                         for section in sections:
                             st.markdown(section)
-    
+
                         # ✅ 요리 이름 추출
                         dish_name = None
                         for section in sections:
@@ -146,7 +146,7 @@ with tab1:
                                 break
                         if not dish_name:
                             dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
-    
+
                         # ✅ TOP 5 크롤링
                         recipes = get_top5_recipes_from_10000recipe(dish_name)
                         if recipes:
@@ -157,7 +157,7 @@ with tab1:
                                     col_img, col_desc, col_btn = st.columns([1, 4, 2])
                                     with col_img:
                                         if recipe["img_url"]:
-                                            st.image(recipe["img_url"], width=100)
+                                            st.image(recipe["img_url"], use_column_width=True)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
                                     with col_btn:
@@ -180,7 +180,7 @@ with tab1:
                                             unsafe_allow_html=True
                                         )
                                     st.form_submit_button(" ", type="tertiary")
-    
+
                             # 더 보기 링크
                             st.markdown(
                                 f"[[ 👉 더 많은 레시피 보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(' ', '+')})"
@@ -399,7 +399,7 @@ with tab3:
             for i, recipe in enumerate(BEST_RECIPES):
                 recipe_index = i + 1
                 with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
-                    st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
+                    st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", use_column_width=True)
                     st.markdown(f"{recipe['summary']}")
     except Exception as e:
         st.error(f"인기레시피 탭 오류: {e}")
