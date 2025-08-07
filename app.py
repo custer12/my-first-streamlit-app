@@ -153,6 +153,7 @@ with tab1:
                             st.markdown(f"## 🔍 {dish_name} 관련 TOP 5 레시피")
                             for idx, recipe in enumerate(recipes, 1):
                                 with st.form(f'dish_{idx}', clear_on_submit=False):
+                                    st.form_submit_button(" ", type="tertiary")
                                     st.markdown(f"### **[ {idx} ] {recipe['title']}**")
                                     col_img, col_desc = st.columns([1, 4])
                                     with col_img:
@@ -160,30 +161,26 @@ with tab1:
                                             st.image(recipe["img_url"], width=100)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
-                                    col_button1, col_button2 = st.columns([1, 1])
-                                    with col_button1():
-                                        st.markdown(
-                                            f'''
-                                            <div style="display: flex; margin-top: 10px;">
-                                                <a href="{recipe["link"]}" target="_blank"
-                                                   style="
-                                                       display: inline-block;
-                                                       padding: 8px 16px;
-                                                       border: 1px solid #D6D6D9;
-                                                       color: #000000;
-                                                       text-decoration: none;
-                                                       border-radius: 6px;
-                                                       font-size: 15px;
-                                                       font-weight: bold;
-                                                   ">
-                                                   바로 가기
-                                                </a>
-                                            </div>
-                                            ''',
-                                            unsafe_allow_html=True
-                                        )
-                                    with col_button2():
-                                        st.form_submit_button(" ", type="tertiary")
+                                    st.markdown(
+                                        f'''
+                                        <div style="display: flex; margin-top: 10px;">
+                                            <a href="{recipe["link"]}" target="_blank"
+                                               style="
+                                                   display: inline-block;
+                                                   padding: 8px 16px;
+                                                   border: 1px solid #D6D6D9;
+                                                   color: #000000;
+                                                   text-decoration: none;
+                                                   border-radius: 6px;
+                                                   font-size: 15px;
+                                                   font-weight: bold;
+                                               ">
+                                               바로 가기
+                                            </a>
+                                        </div>
+                                        ''',
+                                        unsafe_allow_html=True
+                                    )
 
                             # 더 보기 링크
                             st.markdown(
