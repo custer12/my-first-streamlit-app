@@ -113,7 +113,7 @@ with tab1:
                         f"{style_description.get(style, '')}\n"
                         f"요리 이름 (굵게 양옆에 **)\n"
                         f"간단한 설명 (1줄 이내)\n"
-                        f"레시피는 말하지 말고 이름과 설명만 줘\n"
+                        f"아무 것도 말하지 말고 이름과 설명만 줘\n"
                     )
 
                     try:
@@ -158,7 +158,7 @@ with tab1:
                                     col_img, col_desc = st.columns([1, 4])
                                     with col_img:
                                         if recipe["img_url"]:
-                                            st.image(recipe["img_url"], width=100)
+                                            st.image(recipe["img_url"], width=65)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
                                     st.markdown(
@@ -175,7 +175,7 @@ with tab1:
                                                    font-size: 15px;
                                                    font-weight: bold;
                                                ">
-                                               바로 가기
+                                               더 알아보기
                                             </a>
                                         </div>
                                         ''',
