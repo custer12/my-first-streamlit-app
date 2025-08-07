@@ -185,7 +185,6 @@ with tab1:
                                 """
                                 
                                 st.markdown(container_html, unsafe_allow_html=True)
-                                st.form_submit_button(" ", type="tertiary")
 
                             # 더 보기 링크
                             st.markdown(
