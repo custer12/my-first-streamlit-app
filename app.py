@@ -152,43 +152,40 @@ with tab1:
                         if recipes:
                             st.markdown(f"## 🔍 {dish_name} 관련 TOP 5 레시피")
                             for idx, recipe in enumerate(recipes, 1):
-                                with st.form(f'dish_{idx}', clear_on_submit=False):
-                                    d = f"📌 [ {idx} ] {recipe['title']}"
-                                    a = recipe['img_url']
-                                    b = recipe['summary']
-                                    c = recipe['link']
-                                    content_box = f"""
-                                    <div style='display: flex; gap: 20px;'>
-                                        <div style='flex: 1;'>
-                                            <img src="{recipe['img_url']}" width='95' style='border-radius: 6px;' />
-                                        </div>
-                                        <div style='flex: 4; font-size: 14px; color: #333;'>
-                                            {recipe['summary']}
-                                        </div>
+                                d = f"📌 [ {idx} ] {recipe['title']}"
+                                a = recipe['img_url']
+                                b = recipe['summary']
+                                c = recipe['link']
+                                content_box = f"""
+                                <div style='display: flex; gap: 20px;'>
+                                    <div style='flex: 1;'>
+                                        <img src="{recipe['img_url']}" width='95' style='border-radius: 6px;' />
                                     </div>
-                                    """
-                                    
-                                    button_html = f"""
-                                    <div style='display: flex; justify-content: flex-end; margin-top: 20px;'>
-                                        <a href="{recipe['link']}" target="_blank"
-                                           style='display: inline-block; padding: 8px 16px; border: 1px solid #D6D6D9; color: #000000; text-decoration: none; border-radius: 6px; font-size: 15px; font-weight: bold;'>
-                                           더 알아보기
-                                        </a>
+                                    <div style='flex: 4; font-size: 14px; color: #333;'>
+                                        {recipe['summary']}
                                     </div>
-                                    """
-                                    
-                                    container_html = f"""
-                                    <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
-                                        <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
-                                        {content_box}
-                                        {button_html}
-                                    </div>
-                                    """
-                                    
-                                    st.markdown(container_html, unsafe_allow_html=True)
-
-
-                                    st.form_submit_button(" ", type="tertiary")
+                                </div>
+                                """
+                                
+                                button_html = f"""
+                                <div style='display: flex; justify-content: flex-end; margin-top: 10px;'>
+                                    <a href="{recipe['link']}" target="_blank"
+                                       style='display: inline-block; padding: 8px 16px; border: 1px solid #D6D6D9; color: #000000; text-decoration: none; border-radius: 6px; font-size: 15px; font-weight: bold;'>
+                                       더 알아보기
+                                    </a>
+                                </div>
+                                """
+                                
+                                container_html = f"""
+                                <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
+                                    <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
+                                    {content_box}
+                                    {button_html}
+                                </div>
+                                """
+                                
+                                st.markdown(container_html, unsafe_allow_html=True)
+                                st.form_submit_button(" ", type="tertiary")
 
                             # 더 보기 링크
                             st.markdown(
