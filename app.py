@@ -301,7 +301,7 @@ with tab2:
                         unsafe_allow_html=True
                     )
                     st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
-            if st.form_submit_button("확인"):
+            if st.form_submit_button("다시 추천하기"):
                 st.session_state.recommend_mode = False
                 st.session_state.recommendations = []
                 st.rerun()
