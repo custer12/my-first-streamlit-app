@@ -320,7 +320,7 @@ with tab3:
     # 레시피 카드 표시
     for i, recipe in enumerate(current_recipes):
         recipe_index = start_idx + i + 1
-        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '**백종원**')}"):
+        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', 'ㅂㅈㅇ')}"):
             st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
             st.markdown(f"{recipe['summary']}")
 
