@@ -243,7 +243,7 @@ with tab2:
                                     st.markdown(f"**🍰 {d['name']}**")
                                     st.caption(f"타입: {d['type']} | 열량: {d['calorie']} | 맛: {d['taste']}")
                                     st.write(f"💡 {d['description']}")
-                                    st.link_button(f"**['링크']**",d['link'])
+                                    st.link_button(f"**링크**",f'https://www.google.com/search?q={d['name'].replace(' ','+')}')
     with empty1:
         empty()
 
