@@ -270,12 +270,9 @@ with tab2:
                                 elif "error" in data:
                                     st.error(data["error"])
                                 else:
-                                    col1,col2 = st.columns([7, 1])
-                                    with col1():
-                                        st.markdown(f"### {data['title']}")
-                                    with col2():
-                                        st.link_button('더 알아보기', data['link'])
+                                    st.markdown(f"### {data['title']}")
                                     st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
+                                    st.link_button('더 알아보기', data['link'])
 
     with empty1:
         pass  # 비워두는 자리
