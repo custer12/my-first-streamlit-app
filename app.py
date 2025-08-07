@@ -213,63 +213,80 @@ with tab2:
             return {"error": str(e)}
 
     # ✅ Streamlit 시작
-    space1 = st.empty()
+
     st.title("디저트 추천기")
-    st.markdown("""
-    음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
-    """)
+    st.markdown("음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!")
+
+    # 입력 영역 placeholder
     space = st.empty()
-    with space.form(key="dessert_form"):
-        food = space.text_input("🍽️ 먹었던 음식을 입력하세요:")
-        dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
-        taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
-        selected_type = space.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
-        selected_taste = space.selectbox("😋 디저트 맛 선택", options=taste_options)
-        # ✅ AI에게 추천 요청
-        def recommend_desserts_ai(food_name, type_selected, taste_selected):
-            prompt = (
-                f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
-                f"디저트 종류: {type_selected if type_selected != '상관없음' else '제한 없음'}\n"
-                f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
-                "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
-                "{\n"
-                '  "desserts": [\n'
-                '    {"name": "디저트명", "type": "타입", "taste": "맛", "link":"여기에 띄어쓰기를 +로 바꾼 디저트명 적기"},\n'
-                '    ...\n'
-                "  ]\n"
-                "}\n"
+
+    # 상태 저장용
+    if "recommend_mode" not in st.session_state:
+        st.session_state.recommend_mode = False
+    if "recommendations" not in st.session_state:
+        st.session_state.recommendations = []
+
+    def recommend_desserts_ai(food_name, type_selected, taste_selected):
+        prompt = (
+            f"'{food_name}'와 어울리는 디저트를 3개 추천해줘.\n"
+            f"디저트 종류: {type_selected if type_selected != '상관없음' else '제한 없음'}\n"
+            f"맛: {taste_selected if taste_selected != '상관없음' else '제한 없음'}\n"
+            "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
+            "{\n"
+            '  "desserts": [\n'
+            '    {"name": "디저트명", "type": "타입", "taste": "맛", "link":"여기에 띄어쓰기를 +로 바꾼 디저트명 적기"},\n'
+            '    ...\n'
+            "  ]\n"
+            "}"
+        )
+        try:
+            # 예시 AI 호출 부분 (여기 수정하세요)
+            response = client.chat.completions.create(
+                model="solar-pro2",
+                messages=[{"role": "user", "content": prompt}],
+                stream=False
             )
-            try:
-                # 너의 OpenAI 클라이언트 객체 (예시)
-                response = client.chat.completions.create(
-                    model="solar-pro2",
-                    messages=[{"role": "user", "content": prompt}],
-                    stream=False
-                )
-                reply = response.choices[0].message.content
-                import re
-                match = re.search(r'\{[\s\S]*\}', reply)
-                json_str = match.group(0) if match else reply
-                data = json.loads(json_str)
-                return data.get("desserts", [])
-            except Exception as e:
-                return [f"AI 추천 오류: {e}"]
-        if space.form_submit_button("🍰 디저트 추천해줘!"):
-                space = st.empty()
+            reply = response.choices[0].message.content
+            import re
+            match = re.search(r'\{[\s\S]*\}', reply)
+            json_str = match.group(0) if match else reply
+            data = json.loads(json_str)
+            return data.get("desserts", [])
+        except Exception as e:
+            return [f"AI 추천 오류: {e}"]
+
+    # 🔁 화면 분기
+    if not st.session_state.recommend_mode:
+        with space.form(key="dessert_form"):
+            food = st.text_input("🍽️ 먹었던 음식을 입력하세요:")
+            dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
+            taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
+            selected_type = st.selectbox("🍰 디저트 종류 선택", options=dessert_type_options)
+            selected_taste = st.selectbox("😋 디저트 맛 선택", options=taste_options)
+            if st.form_submit_button("🍰 디저트 추천해줘!"):
                 with st.spinner("AI가 디저트를 추천하고 있습니다..."):
-                    recommendations = recommend_desserts_ai(food, selected_type, selected_taste)
-                    st.markdown("### 🍨 추천 디저트 리스트")
-                    for d in recommendations:
-                        data = get_item_top1(f'https://www.pillyze.com/foods/search?query={d['link']}')
-                        if isinstance(d, str):
-                            st.error(d)
-                        elif "error" in data:
-                            st.error(data["error"])
-                        else:
-                            st.markdown(f"### {data['title']}")
-                            st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
-                            st.link_button('더 알아보기', data['link'])
-                    st.form_submit_button("확인")
+                    st.session_state.recommendations = recommend_desserts_ai(food, selected_type, selected_taste)
+                    st.session_state.recommend_mode = True
+                    st.rerun()
+    else:
+        with space.container():
+            st.markdown("### 🍨 추천 디저트 리스트")
+            for d in st.session_state.recommendations:
+                if isinstance(d, str):
+                    st.error(d)
+                    continue
+                data = get_item_top1(f'https://www.pillyze.com/foods/search?query={d["link"]}')
+                if "error" in data:
+                    st.error(data["error"])
+                else:
+                    st.markdown(f"### {data['title']}")
+                    st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
+                    st.link_button("더 알아보기", data["link"])
+            if st.button("확인"):
+                st.session_state.recommend_mode = False
+                st.session_state.recommendations = []
+                st.rerun()
+
     st.markdown("---")
     st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
     st.markdown("📊 **데이터 출처**: [필라이즈](https://www.pillyze.com/) - 영양성분 등등") 
