@@ -172,12 +172,12 @@ with tab1:
                                                 <a href="{recipe["link"]}" target="_blank"
                                                    style="
                                                        display: inline-block;
-                                                       padding: 6px 14px;
+                                                       padding: 12px 28px;
                                                        border: 1px solid #D6D6D9;
                                                        color: #000000;
                                                        text-decoration: none;
-                                                       border-radius: 6px;
-                                                       font-size: 14px;
+                                                       border-radius: 8px;
+                                                       font-size: 24px;
                                                        font-weight: bold;
                                                    ">
                                                    바로 가기
