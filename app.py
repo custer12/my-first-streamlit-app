@@ -57,13 +57,13 @@ def get_fallback_recipes(search_url, top_n = 10):
                 intro_tag = detail_soup.select_one("#recipeIntro")
                 intro = intro_tag.get_text(strip=True) if intro_tag else ""
             except:
-                pass
+                    pass
             
             recipes.append({
                 "title": title,
                 "link": link,
                 "img_url": img_url,
-                "summary": intro
+                "summary": summary_text
             })
         return recipes
     except Exception as e:
