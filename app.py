@@ -162,7 +162,7 @@ with tab1:
                                         st.markdown(recipe["summary"])
                                     st.markdown(
                                         f'''
-                                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                        <div style="display: flex; margin-top: 10px;">
                                             <a href="{recipe["link"]}" target="_blank"
                                                style="
                                                    display: inline-block;
