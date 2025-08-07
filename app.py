@@ -329,7 +329,7 @@ with tab3:
         recipe_index = start_idx + i + 1
         with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '*~~백종원~~*')}"):
             st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", width = 100)
-            st.markdown(f"{recipe['summary'].replace('~','')}")
+            st.markdown(f"{recipe['summary']}")
 
 
 
