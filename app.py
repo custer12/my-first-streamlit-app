@@ -157,7 +157,7 @@ with tab1:
                                     col_img, col_desc, col_btn = st.columns([1, 4, 2])
                                     with col_img:
                                         if recipe["img_url"]:
-                                            st.image(recipe["img_url"], use_column_width=True)
+                                            st.image(recipe["img_url"], use_container_width=True)
                                     with col_desc:
                                         st.markdown(recipe["summary"])
                                     with col_btn:
@@ -399,7 +399,7 @@ with tab3:
             for i, recipe in enumerate(BEST_RECIPES):
                 recipe_index = i + 1
                 with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
-                    st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", use_column_width=True)
+                    st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료", use_container_width=True)
                     st.markdown(f"{recipe['summary']}")
     except Exception as e:
         st.error(f"인기레시피 탭 오류: {e}")
