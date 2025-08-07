@@ -162,11 +162,11 @@ with tab1:
                                             margin-top: 20px;
                                             background-color: #FAFAFA;
                                         '>
-                                            <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe["title"]}</h3>
+                                            <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
                                     
                                             <div style='display: flex; gap: 20px;'>
                                                 <div style='flex: 1;'>
-                                                    <img src="{recipe["img_url"]}" width="95" style='border-radius: 6px;' />
+                                                    <img src="{recipe['img_url']}" width="95" style='border-radius: 6px;' />
                                                 </div>
                                                 <div style='flex: 4; font-size: 14px; color: #333;'>
                                                     {recipe["summary"]}
@@ -174,7 +174,7 @@ with tab1:
                                             </div>
                                     
                                             <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
-                                                <a href="{recipe["link"]}" target="_blank"
+                                                <a href="{recipe['link']}" target="_blank"
                                                    style="
                                                        display: inline-block;
                                                        padding: 8px 16px;
