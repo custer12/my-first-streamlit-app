@@ -163,19 +163,21 @@ with tab1:
                                     with col_btn:
                                         st.markdown(
                                             f'''
-                                            <a href="{recipe["link"]}" target="_blank"
-                                               style="
-                                                   display: inline-block;
-                                                   padding: 6px 14px;
-                                                   border: 2px solid #007bff;
-                                                   color: #007bff;
-                                                   text-decoration: none;
-                                                   border-radius: 6px;
-                                                   font-size: 14px;
-                                                   font-weight: bold;
-                                               ">
-                                               바로 가기
-                                            </a>
+                                            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                                <a href="{recipe["link"]}" target="_blank"
+                                                   style="
+                                                       display: inline-block;
+                                                       padding: 6px 14px;
+                                                       border: 2px solid #007bff;
+                                                       color: #007bff;
+                                                       text-decoration: none;
+                                                       border-radius: 6px;
+                                                       font-size: 14px;
+                                                       font-weight: bold;
+                                                   ">
+                                                   바로 가기
+                                                </a>
+                                            </div>
                                             ''',
                                             unsafe_allow_html=True
                                         )
