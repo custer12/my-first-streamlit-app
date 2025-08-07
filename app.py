@@ -153,34 +153,46 @@ with tab1:
                             st.markdown(f"## 🔍 {dish_name} 관련 TOP 5 레시피")
                             for idx, recipe in enumerate(recipes, 1):
                                 with st.form(f'dish_{idx}', clear_on_submit=False):
-                                    st.form_submit_button(" ", type="tertiary")
-                                    st.markdown(f"### **[ {idx} ] {recipe['title']}**")
-                                    col_img, col_desc = st.columns([1, 4])
-                                    with col_img:
-                                        if recipe["img_url"]:
-                                            st.image(recipe["img_url"], width=65)
-                                    with col_desc:
-                                        st.markdown(recipe["summary"])
                                     st.markdown(
-                                        f'''
-                                        <div style="display: flex; margin-top: 10px;">
-                                            <a href="{recipe["link"]}" target="_blank"
-                                               style="
-                                                   display: inline-block;
-                                                   padding: 8px 16px;
-                                                   border: 1px solid #D6D6D9;
-                                                   color: #000000;
-                                                   text-decoration: none;
-                                                   border-radius: 6px;
-                                                   font-size: 15px;
-                                                   font-weight: bold;
-                                               ">
-                                               더 알아보기
-                                            </a>
+                                        f"""
+                                        <div style='
+                                            border: 2px solid #D6D6D9;
+                                            border-radius: 10px;
+                                            padding: 20px;
+                                            margin-top: 20px;
+                                            background-color: #FAFAFA;
+                                        '>
+                                            <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
+                                    
+                                            <div style='display: flex; gap: 20px;'>
+                                                <div style='flex: 1;'>
+                                                    <img src="{recipe["img_url"]}" width="95" style='border-radius: 6px;' />
+                                                </div>
+                                                <div style='flex: 4; font-size: 14px; color: #333;'>
+                                                    {recipe["summary"]}
+                                                </div>
+                                            </div>
+                                    
+                                            <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                                <a href="{recipe["link"]}" target="_blank"
+                                                   style="
+                                                       display: inline-block;
+                                                       padding: 8px 16px;
+                                                       border: 1px solid #D6D6D9;
+                                                       color: #000000;
+                                                       text-decoration: none;
+                                                       border-radius: 6px;
+                                                       font-size: 15px;
+                                                       font-weight: bold;
+                                                   ">
+                                                   더 알아보기
+                                                </a>
+                                            </div>
                                         </div>
-                                        ''',
+                                        """,
                                         unsafe_allow_html=True
                                     )
+                                    st.form_submit_button(" ", type="tertiary")
 
                             # 더 보기 링크
                             st.markdown(
