@@ -37,170 +37,166 @@ st.markdown("AI 추천과 레시피 정보를 제공합니다!")
 tab1, tab2, tab3 = st.tabs(["🍳 AI 레시피 추천", "🧁 디저트 추천", "🏆 인기 레시피"])
 
 with tab1:
-    space1 = st.empty()
-    # 페이지 설정
-    st.title("🍳 AI 레시피 추천")
-    # 10000레시피에서 추천 요리 관련 TOP5 레시피를 크롤링하는 함수 (이미지 포함)
-    def get_top5_recipes_from_10000recipe(dish_name):
-        search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")}"
-        headers = {
-            "User-Agent": "Mozilla/5.0"
-        }
-        try:
-            res = requests.get(search_url, headers=headers, timeout=10)
-            res.raise_for_status()
-            soup = BeautifulSoup(res.text, "html.parser")
-            recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:5]
-            recipes = []
-            for card in recipe_cards:
-                title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
-                link = "https://www.10000recipe.com" + card.select_one("a")["href"]
-                intro = ""
-                try:
-                    detail_res = requests.get(link, headers=headers, timeout=10)
-                    detail_res.raise_for_status()
-                    detail_soup = BeautifulSoup(detail_res.text, "html.parser")
-                    intro_tag = detail_soup.select_one("#recipeIntro")
-                    intro = intro_tag.get_text(strip=True) if intro_tag else ""
-                except:
-                    pass
-                imgs = card.select(".common_sp_thumb img")
-                img_url = imgs[-1]["src"] if imgs else None
-                recipes.append({
-                    "title": title,
-                    "link": link,
-                    "summary": intro,
-                    "img_url": img_url
-                })
-            return recipes
-        except Exception as e:
-            return []
-    aol1, aol2 = st.columns([1, 1])
-    with aol1():
-        st.header("🥕 요리 정보 입력")
-        ingredients = st.text_area("재료 혹은 음식 이름 입력하세요", placeholder="예: 계란, 당근, 대파")
-        cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["전체","한식", "중식", "양식", "일식", "동남아식"])
-        space1 = st.empty()
-
-        # 요리 스타일 선택 추가
-        style = st.selectbox("요리 스타일을 선택하세요", ["전체","고급", "일반", "간단"])
-        submit = st.button("🍽️ 요리 추천")
-        space1 = st.empty()
-        # 결과 영역
-        if submit:
-            with st.spinner("요리를 생성 중입니다..."):
-
-                # 스타일별로 AI에게 줄 추가 설명 문구 정의
-                style_description = {
-                    "고급": "고급요리를 한개 추천해 주세요",
-                    "일반": "일반 요리 스타일로, 보통 사람들이 쉽게 만들 수 있는 음식을 한개 추천해주세요",
-                    "간단": "초보자도 쉽게 따라 할 수 있는 간단한 요리 스타일로 한개 추천해주세요",
-                    "전체": "아무 요리 한개 추천해주세요"
-                }
-                prompt = (
-                    f"요리를 한개 추천해 주세요"
-                    f"재료 혹은 음식 : {ingredients}\n"
-                    f"요리 종류: {cuisine}\n"
-                    f"요리 스타일: {style}\n"
-                    f"{style_description.get(style, '')}\n"  # 스타일에 맞는 설명 추가
-                    f"위 정보를 참고하여 아래 항목을 포함한 요리를 선택한 요리 스타일에 맞는 난이도로 추천해주세요(생략이나 불필요하면 아무런 택스트 없이 제거 합니다) (만약 냉장고 속 재료의 값이 비어있으면):\n"
-                    f"요리 이름 (굵게 양옆에 **)\n"
-                    f"간단한 설명 (1줄 이내로 요리의 특징이나 매력을 표현)\n"
-                    f"AI 즉 당신은 요리의 레시피는 말하면 안됩니다. 그냥 요리의 이름과 간단한 설명만 말해주세요.\n"
-                )
-                with aol2():
-                    with space1.container():
-                        try:
-                            # OpenAI 호출
-                            response = client.chat.completions.create(
-                                model="solar-pro2",
-                                messages=[{"role": "user", "content": prompt}],
-                                stream=False
-                            )
+    # 🧠 AI 레시피 추천 탭
+    with st.container():
+        st.title("🍳 AI 레시피 추천")
     
-                            reply = response.choices[0].message.content
+        # 👉 컬럼 나누기: 왼쪽 입력, 오른쪽 결과
+        col1, col2 = st.columns([1, 2])
     
-                            sections = reply.split("\n\n")
-                            for section in sections:
-                                st.markdown(section)
+        # ✅ 10000recipe 크롤링 함수
+        def get_top5_recipes_from_10000recipe(dish_name):
+            search_url = f"https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(' ', '+')}"
+            headers = {"User-Agent": "Mozilla/5.0"}
     
-                            # dish_name 추출 개선: 다양한 형식 대응 및 한글/영문/숫자 추출
-                            dish_name = None
-                            # 1. "1. 요리 이름 : 김치볶음밥" 또는 "1. 김치볶음밥" 또는 "1) 김치볶음밥" 등 다양한 케이스 대응
-                            for section in sections:
-                                lines = section.strip().split("\n")
-                                for line in lines:
-                                    # "1. 요리 이름 : ..." 또는 "1. ..." 또는 "1) ..." 등
-                                    m = re.match(r"^\s*1[.)]?\s*(요리\s*이름)?\s*[:\-]?\s*(.+)", line)
-                                    if m:
-                                        # m.group(2)에 요리 이름이 들어감
-                                        candidate = m.group(2).strip()
-                                        # 한글, 영문, 숫자, 공백만 남기고 추출
-                                        candidate = re.sub(r"[^가-힣a-zA-Z0-9\s]", "", candidate)
-                                        # 너무 짧거나 이상하면 무시
-                                        if len(candidate) > 1:
-                                            dish_name = candidate
-                                            break
-                                if dish_name:
-                                    break
-                            if not dish_name:
-                                for section in sections:
-                                    lines = section.strip().split("\n")
-                                    for line in lines:
-                                        candidate = re.findall(r"[가-힣a-zA-Z0-9 ]{2,}", line)
-                                        if candidate:
-                                            dish_name = candidate[0].strip()
-                                            break
-                                    if dish_name:
+            try:
+                res = requests.get(search_url, headers=headers, timeout=10)
+                res.raise_for_status()
+                soup = BeautifulSoup(res.text, "html.parser")
+                recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:5]
+    
+                recipes = []
+                for card in recipe_cards:
+                    title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
+                    link = "https://www.10000recipe.com" + card.select_one("a")["href"]
+                    intro = ""
+    
+                    try:
+                        detail_res = requests.get(link, headers=headers, timeout=10)
+                        detail_res.raise_for_status()
+                        detail_soup = BeautifulSoup(detail_res.text, "html.parser")
+                        intro_tag = detail_soup.select_one("#recipeIntro")
+                        intro = intro_tag.get_text(strip=True) if intro_tag else ""
+                    except:
+                        pass
+                    
+                    imgs = card.select(".common_sp_thumb img")
+                    img_url = imgs[-1]["src"] if imgs else None
+    
+                    recipes.append({
+                        "title": title,
+                        "link": link,
+                        "summary": intro,
+                        "img_url": img_url
+                    })
+    
+                return recipes
+            except:
+                return []
+    
+        # ✅ 왼쪽: 입력 영역
+        with col1:
+            st.header("🥕 요리 정보 입력")
+            ingredients = st.text_area("재료 혹은 음식 이름 입력하세요", placeholder="예: 계란, 당근, 대파")
+            cuisine = st.selectbox("원하는 요리 종류를 선택하세요", ["전체", "한식", "중식", "양식", "일식", "동남아식"])
+            style = st.selectbox("요리 스타일을 선택하세요", ["전체", "고급", "일반", "간단"])
+            submit = st.button("🍽️ 요리 추천")
+    
+        # ✅ 오른쪽: 결과 영역
+        with col2:
+            if submit:
+                with st.spinner("AI가 요리를 추천 중입니다..."):
+                
+                    # 스타일별 안내 문구
+                    style_description = {
+                        "고급": "고급요리를 한개 추천해 주세요",
+                        "일반": "일반 요리 스타일로, 보통 사람들이 쉽게 만들 수 있는 음식을 한개 추천해주세요",
+                        "간단": "초보자도 쉽게 따라 할 수 있는 간단한 요리 스타일로 한개 추천해주세요",
+                        "전체": "아무 요리 한개 추천해주세요"
+                    }
+    
+                    prompt = (
+                        f"요리를 한개 추천해 주세요\n"
+                        f"재료 혹은 음식 : {ingredients}\n"
+                        f"요리 종류: {cuisine}\n"
+                        f"요리 스타일: {style}\n"
+                        f"{style_description.get(style, '')}\n"
+                        f"요리 이름 (굵게 양옆에 **)\n"
+                        f"간단한 설명 (1줄 이내)\n"
+                        f"레시피는 말하지 말고 이름과 설명만 줘\n"
+                    )
+    
+                    try:
+                        # ✅ AI 호출 (예시용 — 실제 모델 호출 코드로 교체 필요)
+                        response = client.chat.completions.create(
+                            model="solar-pro2",
+                            messages=[{"role": "user", "content": prompt}],
+                            stream=False
+                        )
+                        reply = response.choices[0].message.content
+                        sections = reply.split("\n\n")
+    
+                        # 출력
+                        for section in sections:
+                            st.markdown(section)
+    
+                        # ✅ 요리 이름 추출
+                        dish_name = None
+                        for section in sections:
+                            lines = section.strip().split("\n")
+                            for line in lines:
+                                m = re.match(r"^\s*1[.)]?\s*(요리\s*이름)?\s*[:\-]?\s*(.+)", line)
+                                if m:
+                                    candidate = m.group(2).strip()
+                                    candidate = re.sub(r"[^가-힣a-zA-Z0-9\s]", "", candidate)
+                                    if len(candidate) > 1:
+                                        dish_name = candidate
                                         break
-                            if not dish_name:
-                                dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
+                            if dish_name:
+                                break
+                        if not dish_name:
+                            dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
     
-                            recipes = get_top5_recipes_from_10000recipe(dish_name.replace(" ", "+"))
-                            if recipes:
-                                for idx, recipe in enumerate(recipes, 1):
-                                    with st.form(f'dish_{idx}', False):
-                                        st.markdown(f"### **[ {idx} ] [{recipe['title']}]**")
-                                        col1, col2, button = st.columns([1, 6, 3])
-                                        with col1:
+                        # ✅ TOP 5 크롤링
+                        recipes = get_top5_recipes_from_10000recipe(dish_name)
+                        if recipes:
+                            st.markdown(f"## 🔍 {dish_name} 관련 TOP 5 레시피")
+                            for idx, recipe in enumerate(recipes, 1):
+                                with st.form(f'dish_{idx}', clear_on_submit=False):
+                                    st.markdown(f"### **[ {idx} ] {recipe['title']}**")
+                                    col_img, col_desc, col_btn = st.columns([1, 4, 2])
+                                    with col_img:
+                                        if recipe["img_url"]:
                                             st.image(recipe["img_url"], width=100)
-                                        with col2:
-                                            st.markdown(f"{recipe['summary']}")
-                                        with button:
-                                            st.markdown(
-                                f'''
-                                <div style="display: flex; align-items: center;">
-                                    <a href="{recipe["link"]}" target="_blank"
-                                       style="
-                                           display: inline-block;
-                                           margin-left: 10px;
-                                           padding: 6px 14px;
-                                           border: 2px solid #007bff;
-                                           color: #007bff;
-                                           text-decoration: none;
-                                           border-radius: 6px;
-                                           font-size: 14px;
-                                           font-weight: bold;
-                                       ">
-                                       바로 가기
-                                    </a>
-                                </div>
-                                ''',
-                                unsafe_allow_html=True
-                            )
-                                            st.form_submit_button(f" ", type="tertiary")
-                                st.markdown(f"## {dish_name} 관련 레시피")
-                                st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
-                            else:
-                                st.info("🔍 10000레시피에서 관련 레시피를 찾을 수 없었습니다.")
+                                    with col_desc:
+                                        st.markdown(recipe["summary"])
+                                    with col_btn:
+                                        st.markdown(
+                                            f'''
+                                            <a href="{recipe["link"]}" target="_blank"
+                                               style="
+                                                   display: inline-block;
+                                                   padding: 6px 14px;
+                                                   border: 2px solid #007bff;
+                                                   color: #007bff;
+                                                   text-decoration: none;
+                                                   border-radius: 6px;
+                                                   font-size: 14px;
+                                                   font-weight: bold;
+                                               ">
+                                               바로 가기
+                                            </a>
+                                            ''',
+                                            unsafe_allow_html=True
+                                        )
+                                    st.form_submit_button(" ", type="tertiary")
     
-                        except Exception as e:
-                            st.error(f"❌ 오류 발생: {e}")
-        else:
-            st.info("재료와 요리 종류를 입력하고 버튼을 눌러주세요!")
+                            # 더 보기 링크
+                            st.markdown(
+                                f"[[ 👉 더 많은 레시피 보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(' ', '+')})"
+                            )
+                        else:
+                            st.info("❗ 관련 레시피를 찾을 수 없습니다.")
+                    except Exception as e:
+                        st.error(f"❌ 오류 발생: {e}")
+            else:
+                st.info("왼쪽에 재료를 입력하고 버튼을 눌러 추천을 받아보세요!")
+
+    # 하단 안내
     st.markdown("---")
     st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
-    st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/)") 
+    st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/)")
+
 
 with tab2:
     def get_item_top1(search_url):
