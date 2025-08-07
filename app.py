@@ -269,7 +269,7 @@ with tab2:
                     st.session_state.recommend_mode = True
                     st.rerun()
     else:
-        with space.container():
+        with space.form():
             st.markdown("### 🍨 추천 디저트 리스트")
             for d in st.session_state.recommendations:
                 if isinstance(d, str):
