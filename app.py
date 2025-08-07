@@ -248,89 +248,83 @@ with tab2:
 
 
 def get_fallback_recipes(search_url, top_n = 10):
+    import concurrent.futures
+    print('get_fallback_recipes 진입')
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
     try:
+        print('requests.get 시작')
         res = requests.get(search_url, headers=headers, timeout=10)
+        print('requests.get 완료')
         res.raise_for_status()
+        print('raise_for_status 완료')
         soup = BeautifulSoup(res.text, "html.parser")
-        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:top_n]
+        print('BeautifulSoup 파싱 완료')
+        recipe_cards = soup.select(".common_sp_list_ul .common_sp_list_li")[:10]  # 무조건 10개만
+        print(f'recipe_cards 개수: {len(recipe_cards)}')
         recipes = []
+        detail_links = []
         for card in recipe_cards:
             title = card.select_one(".common_sp_caption_tit").get_text(strip=True)
             link = "https://www.10000recipe.com" + card.select_one("a")["href"]
             imgs = card.select(".common_sp_thumb img")
             img_url = imgs[-1]["src"] if imgs else None
-            summary = ""
+            recipes.append({
+                "title": title,
+                "link": link,
+                "img_url": img_url,
+                "summary": ""
+            })
+            detail_links.append(link)
+        # detail 요청을 병렬로 처리 (10개만)
+        def fetch_summary(link):
             try:
                 detail_res = requests.get(link, headers=headers, timeout=10)
                 detail_res.raise_for_status()
                 detail_soup = BeautifulSoup(detail_res.text, "html.parser")
                 intro_tag = detail_soup.select_one("#recipeIntro")
-                summary = intro_tag.get_text(strip=True) if intro_tag else ""
-            except:
-                pass
-            
-            recipes.append({
-                "title": title,
-                "link": link,
-                "img_url": img_url,
-                "summary": summary
-            })
+                return intro_tag.get_text(strip=True) if intro_tag else ""
+            except Exception as e:
+                print(f'detail 요청 실패: {e}')
+                return ""
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            summaries = list(executor.map(fetch_summary, detail_links))
+        # summary를 recipes에 할당
+        for i, summary in enumerate(summaries):
+            recipes[i]["summary"] = summary
+        print(f'최종 반환 recipes 개수: {len(recipes)}')
         return recipes
     except Exception as e:
+        print(f'get_fallback_recipes 예외: {e}')
+        import traceback
+        print(traceback.format_exc())
         return []
 
 with tab3:
-    st.header("🏆 레시피 베스트 순위")
-    BEST_RECIPES = get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
-    space1 = st.empty()
-    
-    # 페이지네이션 설정
-    if 'current_page' not in st.session_state:
-        st.session_state.current_page = 0
-    
-    items_per_page = 10
-    total_items = len(BEST_RECIPES)
-    total_pages = (total_items + items_per_page - 1) // items_per_page
-    
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.markdown("**실시간 인기 레시피** - [만개의 레시피](https://www.10000recipe.com/index.html)에서 가져온 실제 데이터")
-    with col2:
-        col2_1, col2_2 = st.columns(2)
-        with col2_1:
-            if st.button("⬅️ 이전", disabled=st.session_state.current_page == 0):
-                st.session_state.current_page = max(0, st.session_state.current_page - 1)
-                st.rerun()
-        with col2_2:
-            if st.button("다음 ➡️", disabled=st.session_state.current_page >= total_pages - 1):
-                st.session_state.current_page = min(total_pages - 1, st.session_state.current_page + 1)
-                st.rerun()
-    
-    # 페이지 정보 표시
-    st.markdown(f"**페이지 {st.session_state.current_page + 1} / {total_pages}**")
-    
-    # 데이터 로딩 상태 표시
-    if len(BEST_RECIPES) == 0:
-        st.warning("레시피 데이터를 불러오는 중입니다... (크롤링 실패 또는 네트워크 문제일 수 있습니다)")
-    else:
-        # 데이터 로딩 성공
-        pass
-    
-    # 현재 페이지에 해당하는 레시피들만 표시
-    start_idx = st.session_state.current_page * items_per_page
-    end_idx = min(start_idx + items_per_page, total_items)
-    current_recipes = BEST_RECIPES[start_idx:end_idx]
-    
-    # 레시피 카드 표시
-    for i, recipe in enumerate(current_recipes):
-        recipe_index = start_idx + i + 1
-        with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
-            st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
-            st.markdown(f"{recipe['summary']}")
-
+    try:
+        print(1)
+        st.header("🏆 레시피 베스트 순위")
+        space1 = st.empty()
+        @st.cache_data
+        def get_best_recipes():
+            return get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
+        with space1.container():
+            with st.spinner("레시피 데이터를 불러오는 중입니다..."):
+                BEST_RECIPES = get_best_recipes()
+        # 10개만 표시
+        if len(BEST_RECIPES) == 0:
+            st.warning("레시피 데이터를 불러오는 중입니다... (크롤링 실패 또는 네트워크 문제일 수 있습니다)")
+        else:
+            for i, recipe in enumerate(BEST_RECIPES):
+                recipe_index = i + 1
+                with st.expander(f"[ {recipe_index} ] {recipe['title'].replace('백종원', '~~백종원~~')}"):
+                    st.image(f"{recipe['img_url']}", caption=f"{recipe['link']} 의 자료")
+                    st.markdown(f"{recipe['summary']}")
+    except Exception as e:
+        st.error(f"인기레시피 탭 오류: {e}")
+        import traceback
+        st.text(traceback.format_exc())
 
 
 st.markdown("---")
