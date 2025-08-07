@@ -168,8 +168,8 @@ with tab1:
                                                    style="
                                                        display: inline-block;
                                                        padding: 6px 14px;
-                                                       border: 2px solid #007bff;
-                                                       color: #007bff;
+                                                       border: 2px solid #D6D6D9;
+                                                       color: #000000;
                                                        text-decoration: none;
                                                        border-radius: 6px;
                                                        font-size: 14px;
