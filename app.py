@@ -308,7 +308,7 @@ with tab3:
         space1 = st.empty()
         @st.cache_data
         def get_best_recipes():
-            return get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 10)
+            return get_fallback_recipes('https://www.10000recipe.com/ranking/home_new.html?dtype=d&rtype=r', 100)
         with space1.container():
             with st.spinner("레시피 데이터를 불러오는 중입니다..."):
                 BEST_RECIPES = get_best_recipes()
