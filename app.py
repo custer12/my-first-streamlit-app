@@ -279,10 +279,9 @@ with tab2:
                 if "error" in data:
                     st.error(data["error"])
                 else:
-                    st.markdown(f"### {data['title']}")
+                    st.markdown(f"### {data['title']} ####[[더 알아보기]]({data["link"]})")
                     st.caption(f"타입: {d['type']} | 열량: {data['g']} / {data['kcal']} | 맛: {d['taste']}")
-                    st.link_button("더 알아보기", data["link"])
-            if st.button("확인"):
+            if st.form_submit_button("확인"):
                 st.session_state.recommend_mode = False
                 st.session_state.recommendations = []
                 st.rerun()
