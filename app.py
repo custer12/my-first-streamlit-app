@@ -219,7 +219,7 @@ with tab2:
     음식 이름, 열량, 맛을 입력하면 AI가 어울리는 디저트를 추천해 드려요!
     """)
     space = st.empty()
-    with st.form(key="dessert_form"):
+    with space.form(key="dessert_form"):
         food = space.text_input("🍽️ 먹었던 음식을 입력하세요:")
         dessert_type_options = ["상관없음", "케이크", "아이스크림", "과자", "푸딩", "타르트", "무스", "음료수", "파이"]
         taste_options = ["상관없음", "달콤", "진한", "상큼", "신", "짭짤", "시원", "탄산"]
