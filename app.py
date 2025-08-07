@@ -106,14 +106,17 @@ with tab1:
                     }
 
                     prompt = (
-                        f"요리를 한개 추천해 주세요\n"
+                        f"요리를 한 개 추천해 주세요\n"
                         f"재료 혹은 음식 : {ingredients}\n"
                         f"요리 종류: {cuisine}\n"
                         f"요리 스타일: {style}\n"
                         f"{style_description.get(style, '')}\n"
-                        f"요리 이름 (굵게 양옆에 **)\n"
-                        f"간단한 설명 (1줄 이내)\n"
-                        f"아무 것도 말하지 말고 이름과 설명만 줘\n"
+                        f"아래 JSON 형식으로 응답해 주세요:\n"
+                        f"{{\n"
+                        f'  "name": "요리 이름",\n'
+                        f'  "description": "간단한 설명 (1줄 이내)"\n'
+                        f"}}\n"
+                        f"다른 말은 절대 하지 말고 JSON만 출력해 주세요."
                     )
 
                     try:
@@ -129,23 +132,12 @@ with tab1:
                         # 출력
                         for section in sections:
                             st.markdown(section)
-
-                        # ✅ 요리 이름 추출
-                        dish_name = None
-                        for section in sections:
-                            lines = section.strip().split("\n")
-                            for line in lines:
-                                m = re.match(r"^\s*1[.)]?\s*(요리\s*이름)?\s*[:\-]?\s*(.+)", line)
-                                if m:
-                                    candidate = m.group(2).strip()
-                                    candidate = re.sub(r"[^가-힣a-zA-Z0-9\s]", "", candidate)
-                                    if len(candidate) > 1:
-                                        dish_name = candidate
-                                        break
-                            if dish_name:
-                                break
-                        if not dish_name:
-                            dish_name = ingredients.split(",")[0].strip() if ingredients else "추천 요리"
+                    
+                        # JSON 파싱
+                        recipe_data = json.loads(reply)
+                        dish_name = recipe_data.get("name", "추천 요리")
+                        description = recipe_data.get("description", "")
+                    
 
                         # ✅ TOP 5 크롤링
                         recipes = get_top5_recipes_from_10000recipe(dish_name)
