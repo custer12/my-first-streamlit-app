@@ -165,7 +165,27 @@ with tab1:
                                 with col2:
                                     st.markdown(f"{recipe['summary']}")
                                 with button:
-                                    st.markdown(f"[🍽️ 레시피 보기]({recipe['link']})")
+                                    st.markdown(
+                        f'''
+                        <div style="display: flex; align-items: center;">
+                            <a href="{recipe["link"]}" target="_blank"
+                               style="
+                                   display: inline-block;
+                                   margin-left: 10px;
+                                   padding: 6px 14px;
+                                   border: 2px solid #007bff;
+                                   color: #007bff;
+                                   text-decoration: none;
+                                   border-radius: 6px;
+                                   font-size: 14px;
+                                   font-weight: bold;
+                               ">
+                               바로 가기
+                            </a>
+                        </div>
+                        ''',
+                        unsafe_allow_html=True
+                    )
                                     st.form_submit_button(f" ", type="tertiary")
                         st.markdown(f"## {dish_name} 관련 레시피")
                         st.markdown(f"[[ 더 많이 알아보기 ]](https://www.10000recipe.com/recipe/list.html?q={dish_name.replace(" ", "+")})")
