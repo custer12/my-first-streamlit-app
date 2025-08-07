@@ -287,14 +287,14 @@ with tab2:
                                    display: inline-block;
                                    margin-left: 10px;
                                    padding: 6px 14px;
-                                   background-color: #007bff;
-                                   color: white;
+                                   border: 2px solid #007bff;
+                                   color: #007bff;
                                    text-decoration: none;
                                    border-radius: 6px;
                                    font-size: 14px;
                                    font-weight: bold;
                                ">
-                               [ 링크 ]
+                               바로 가기
                             </a>
                         </div>
                         ''',
