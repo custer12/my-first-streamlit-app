@@ -206,7 +206,7 @@ with tab2:
                     "아래 형식의 JSON만 반환해. 설명이나 다른 텍스트는 절대 포함하지 마:\n"
                     "{\n"
                     '  "desserts": [\n'
-                    '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명"},\n'
+                    '    {"name": "디저트명", "type": "타입", "calorie": "열량", "taste": "맛", "description": "간단설명","link":"그 디저트의 인터넷 링크"},\n'
                     '    ...\n'
                     "  ]\n"
                     "}\n"
@@ -239,8 +239,9 @@ with tab2:
                             for d in recommendations:
                                 if isinstance(d, str):
                                     st.error(d)
-                                else:
+                                else: link
                                     st.markdown(f"**🍰 {d['name']}**")
+                                    st.markdown(f"**['링크']({d['link']})**")
                                     st.caption(f"타입: {d['type']} | 열량: {d['calorie']} | 맛: {d['taste']}")
                                     st.write(f"💡 {d['description']}")
     with empty1:
@@ -330,3 +331,4 @@ with tab3:
 st.markdown("---")
 st.markdown("💡 **팁**: 더 정확한 추천을 위해 현재 상황을 자세히 설명해주세요!")
 st.markdown("📊 **데이터 출처**: [만개의 레시피](https://www.10000recipe.com/index.html) - 실시간 인기 레시피") 
+
