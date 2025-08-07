@@ -171,33 +171,21 @@ with tab1:
                                     button_html = f"""
                                     <div style='display: flex; justify-content: flex-end; margin-top: 20px;'>
                                         <a href="{recipe['link']}" target="_blank"
-                                           style='
-                                               display: inline-block;
-                                               padding: 8px 16px;
-                                               border: 1px solid #D6D6D9;
-                                               color: #000000;
-                                               text-decoration: none;
-                                               border-radius: 6px;
-                                               font-size: 15px;
-                                               font-weight: bold;
-                                           '>
+                                           style='display: inline-block; padding: 8px 16px; border: 1px solid #D6D6D9; color: #000000; text-decoration: none; border-radius: 6px; font-size: 15px; font-weight: bold;'>
                                            더 알아보기
                                         </a>
                                     </div>
                                     """
                                     
-                                    st.markdown(
-                                        f"""
-                                        <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
-                                            <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
+                                    container_html = f"""
+                                    <div style='border: 2px solid #D6D6D9; border-radius: 10px; padding: 20px; margin-top: 20px; background-color: #FAFAFA;'>
+                                        <h3 style='margin-bottom: 15px;'>📌 [ {idx} ] {recipe['title']}</h3>
+                                        {content_box}
+                                        {button_html}
+                                    </div>
+                                    """
                                     
-                                            {content_box}
-                                    
-                                            {button_html}
-                                        </div>
-                                        """,
-                                        unsafe_allow_html=True
-                                    )
+                                    st.markdown(container_html, unsafe_allow_html=True)
 
 
                                     st.form_submit_button(" ", type="tertiary")
